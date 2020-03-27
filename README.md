@@ -1,4 +1,6 @@
 # DS_Gr.26
+***Kodi që e kemi ngarkuar 10 ditë me parë, nuk u hapke andaj e kemi fshirë, për shkaqe kofidencialiteti, mund t’i shihni edhe n’branchat e tonë që i kemi fshi !!!
+
 FAZA 1- Siguri e te dhenave
 Grupi ynë ka pasur për detyrë 3 komandat siashtu dhe nënkomandat në vijim:
 1) Komanda Frequency 

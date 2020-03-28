@@ -10,13 +10,11 @@ Siashtu kemi bërë edhe paraqitjen e shkronjave me anë të 𝗔𝗦𝗖𝗜�
 2) 𝙆𝙤𝙢𝙖𝙣𝙙𝙖 𝙑𝙞𝙜𝙚𝙣𝙚𝙧𝙚 dhe dy nënkomandat: 
    2𝒂)𝑵ë𝒏𝒌𝒐𝒎𝒂𝒏𝒅𝒂 𝒑ë𝒓 𝒆𝒏𝒌𝒓𝒊𝒑𝒕𝒊𝒎 
    2𝒃)𝑵ë𝒏𝒌𝒐𝒎𝒂𝒏𝒅𝒂 𝒑ë𝒓 𝒅𝒆𝒌𝒓𝒊𝒑𝒕𝒊𝒎.
-
 Qëllimi i kësaj komande ka qenë të enkriptohet dhe dekriptohet fjalia e dhënë, duke i marrë parasysh edhe hapsirat mes fjalëve.
 
 3) 𝙆𝙤𝙢𝙖𝙣𝙖𝙙𝙖 P𝙡𝙖𝙮𝙛𝙖𝙞𝙧 dhe dy nënkomandat e saj: 
     3𝒂)𝑵ë𝒏𝒌𝒐𝒎𝒂𝒏𝒅𝒂 𝒑ë𝒓 𝒆𝒏𝒌𝒓𝒊𝒑𝒕𝒊𝒎 
     3𝒃)𝑵ë𝒏𝒌𝒐𝒎𝒂𝒏𝒅𝒂 𝒑ë𝒓 𝒅𝒆𝒌𝒓𝒊𝒑𝒕𝒊𝒎. 
-
 Qëllimi i kësaj komande ka qenë që fillimisht fjalinë e dhënë nga përdoruesi t’a paraqesim në formë 𝐭𝐚𝐛𝐞𝐥𝐞(𝐦𝐚𝐭𝐫𝐢𝐜𝐞) 𝟓𝐱𝟓, e mandej me anë të dy nënkomandave, fjalinë e dhënë nga përdoruesi t’a enkriptojmë dhe dekriptojmë, por me kusht që  enkriptimi t’a ndan fjalinë dy nga dy shkronja (𝐝𝐢𝐠𝐫𝐚𝐩𝐡).
 
 Gjuha që kemi përdor për implementimin e kësaj faze, është 𝐉𝐚𝐯𝐚. 

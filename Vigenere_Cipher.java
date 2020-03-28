@@ -13,13 +13,11 @@ public class Vigenere_Cipher {
 		}
 		return true;
 	}
-	
 	public String removeSpaces(String text) {
 		return text.replaceAll("\\s", "");
 	}
-		
-	public int Gjej_Vlerat_e_Shkronjave(char a) {
 
+	public int Gjej_Vlerat_Shkronjave(char a) {
 		int VleraKarakterit = 0;
 		if (Character.isLetter(a)) {
 			String b = String.valueOf(a);
@@ -30,8 +28,8 @@ public class Vigenere_Cipher {
 						VleraKarakterit = VleraKarakterit + Alfabeti.valueOf(Shkronja.toString()).ordinal();
 					}
 				}
-			  }
-		    } else {
+			}
+		} else {
 			VleraKarakterit = -1;
 		}
 		return VleraKarakterit;
@@ -41,28 +39,27 @@ public class Vigenere_Cipher {
 		String CipherTexti = "";
 
 		int ShkronjaEnkriptuar;
+		int j = 0;
 		int i = 0;
-		int j = 0;		
 
 		Labela1: do {
 			if (j < Celesi.length()) {
-				if (Gjej_Vlerat_e_Shkronjave(Celesi.charAt(j)) != -1) {
-					if (Gjej_Vlerat_e_Shkronjave(PlainTexti.charAt(i)) != -1) {
-						ShkronjaEnkriptuar = (Gjej_Vlerat_e_Shkronjave(PlainTexti.charAt(i))
-								+ Gjej_Vlerat_e_Shkronjave(Celesi.charAt(j))) % 26;
+				if (Gjej_Vlerat_Shkronjave(Celesi.charAt(j)) != -1) {
+					if (Gjej_Vlerat_Shkronjave(PlainTexti.charAt(i)) != -1) {
+						ShkronjaEnkriptuar = (Gjej_Vlerat_Shkronjave(PlainTexti.charAt(i))
+								+ Gjej_Vlerat_Shkronjave(Celesi.charAt(j))) % 26;
 						Alfabeti Shkronja = Alfabeti.values()[ShkronjaEnkriptuar];
 						CipherTexti = CipherTexti + Shkronja;
 						j++;
 					} else {
 						CipherTexti = CipherTexti + " ";
 					}
-				 }
-				else {
+				} else {
+					// Kur Celesi ka hapesira bane qkapo menon
 					j++;
 					continue Labela1;
 				}
-			}
-			else {
+			} else {
 				j = 0;
 				continue Labela1;
 			}
@@ -80,31 +77,27 @@ public class Vigenere_Cipher {
 
 		Labela1: do {
 			if (j < Celesi.length()) {
-				if (Gjej_Vlerat_e_Shkronjave(Celesi.charAt(j)) != -1) {
-					if (Gjej_Vlerat_e_Shkronjave(CipherTexti.charAt(i)) != -1) {
-						ShkronjaEnkriptuar = (Gjej_Vlerat_e_Shkronjave(CipherTexti.charAt(i))
-								- Gjej_Vlerat_e_Shkronjave(Celesi.charAt(j))) % 26;
-						if ((Gjej_Vlerat_e_Shkronjave(CipherTexti.charAt(i))
-								- Gjej_Vlerat_e_Shkronjave(Celesi.charAt(j))) < 0) {
+				if (Gjej_Vlerat_Shkronjave(Celesi.charAt(j)) != -1) {
+					if (Gjej_Vlerat_Shkronjave(CipherTexti.charAt(i)) != -1) {
+						ShkronjaEnkriptuar = (Gjej_Vlerat_Shkronjave(CipherTexti.charAt(i))
+								- Gjej_Vlerat_Shkronjave(Celesi.charAt(j))) % 26;
+						if ((Gjej_Vlerat_Shkronjave(CipherTexti.charAt(i))
+								- Gjej_Vlerat_Shkronjave(Celesi.charAt(j))) < 0) {
 							Alfabeti Shkronja = Alfabeti.values()[ShkronjaEnkriptuar + 26];
 							PlainTexti = PlainTexti + Shkronja;
-						}
-						else {
+						} else {
 							Alfabeti Shkronja = Alfabeti.values()[ShkronjaEnkriptuar];
 							PlainTexti = PlainTexti + Shkronja;
 						}
 						j++;
-					   }
-				   else {
+					} else {
 						PlainTexti = PlainTexti + " ";
 					}
-				}
-			  else {
+				} else {
 					j++;
 					continue Labela1;
 				}
-			}
-		 else {
+			} else {
 				j = 0;
 				continue Labela1;
 			}

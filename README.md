@@ -15,3 +15,6 @@ Qëllimi i kësaj komande ka qenë
 që fillimisht fjalinë e dhënë nga përdoruesi t’a paraqesim në formë tabele(matrice) 5x5, e mandej me anë të dy nënkomandave, fjalinë e dhënë nga përdoruesi t’a enkriptojmë dhe dekriptojmë, por me kusht që  enkriptimi t’a ndan fjalinë dy nga dy shkronja (digraph).
 Gjuha që kemi përdor për implementimin e kësaj faze,është Java. 
 Kodi i komandës frequency ka referencën e saj( se ku jemi bazu), ndërsa dy komandat e tjera i kemi bërë pothuajse (80%) vetëm (me prejashtim ndonjë tutoriali,por sidoçoftë kemi dhënë disa referenca edhe për to)
+
+** Menyra se si i kemi egzekutuar komandat**
+ Permes batch file. Kemi marr kodin, kemi ekstraktuar, me pas kemi fituar file-n Main.jar .Me pas per secilen komande kemi bere nga nje file te re me prapashtesen bat, ku ne te kemi shkruar Pathin (psh per komanden playfair)si ne vijim: java -jar "Main.jar" "playfair" encrypt "key " "Pershendetje nga Fiek", ose menyra dyte, duke shkuar ne pathin file-s tek i cili kemi vendosur shkurtesen 'cmd' dhe me pas eshte hapur konzolat per te marr  argumentet.

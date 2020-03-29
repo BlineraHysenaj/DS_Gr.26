@@ -1,6 +1,6 @@
 public class Main {
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		try {
 // ******************************************--VIEGENERE--************************************
 			if (args[0].equalsIgnoreCase("vigenere")) {
@@ -12,75 +12,85 @@ public class Main {
 				if (args[1].equalsIgnoreCase("encrypt")) {
 					PlainText_Vigenere = args[3];
 					if (!Vigenere.isAlphaAndSpaces(Keyword_Vigenere)) {
-						System.err.println("Keywordi-i duhet te permbajt vetem shkronja");
+						System.err.println("Argument jo-valid.");
+						System.out.println(
+								"Ju lutem perseritni hapat perseri dhe Keywordi duhet te permbaj vetem shkronja!! ");
 						return;
 					}
-					System.out.println("Teksti i enkriptuar: " + Vigenere.Enkript(PlainText_Vigenere, Keyword_Vigenere));
-				} 
-				else if (args[1].equalsIgnoreCase("decrypt")) {
+					System.out
+							.println("Teksti i enkriptuar: " + Vigenere.Enkript(PlainText_Vigenere, Keyword_Vigenere));
+				} else if (args[1].equalsIgnoreCase("decrypt")) {
 					CipherTexti_Vigenere = args[3];
 
 					if (!Vigenere.isAlphaAndSpaces(Keyword_Vigenere)) {
-						System.err.println("Keywordi-i duhet te permbajt vetem shkronja");
+						System.err.println("Keywordi eshte jo-valid.");
+						System.out.println(
+								"Ju lutem perseritni hapat perseri dhe Keywordi duhet te permbaj vetem shkronja!! ");
 						return;
 					}
 
 					System.out.println(
 							"Teksti i dekriptuar: " + Vigenere.Dekript(CipherTexti_Vigenere, Keyword_Vigenere));
 				} else {
-					System.out.println("Kodi i ,ju keni shkruar zgjedhjen gabim: " + args[1]);
+					System.err.println("Argumenti i zgjedhur " + args[1] + " eshte jo-valid \n");
+					System.out.println("Mundesia e zgjedhjes eshte: encrypt ose decrypt.");
 				}
 
-			}		
-			
-			if (args[0].equalsIgnoreCase("playfair")) {
-				
+			}
+
+			else if (args[0].equalsIgnoreCase("playfair")) {
+
 // *******************************************--PLAYFAIR--***************************************
 				PlayFair_Cipher PlayFair_Cipher = new PlayFair_Cipher();
 
 				String PlainText_PlayFair = "";
 				String CipherTexti_PlayFair = "";
 				String Keyword_PlayFair = args[2];
-				String Keyword_PlayFair_Decrypt=args[2];
-
+				
+				
 				if (args[1].equalsIgnoreCase("encrypt")) {
 					PlainText_PlayFair = args[3];
 					if (!PlayFair_Cipher.isAlphaAndSpaces(Keyword_PlayFair)) {
-						System.err.println("Keywordi-i duhet te permbajt vetem shkronja");
+						System.err.println("Argument jo-valid.");
+						System.out.println(
+								"Ju lutem perseritni hapat perseri dhe Keywordi duhet te permbaj vetem shkronja!! ");
 						return;
 					}
 					PlayFair_Cipher.setKeyWord(Keyword_PlayFair);
 					PlayFair_Cipher.genMatrix();
 					PlayFair_Cipher.encrypt(PlainText_PlayFair);
-				}
-				else if (args[1].equals("decrypt")) {
-					if (!PlayFair_Cipher.isAlphaAndSpaces(Keyword_PlayFair_Decrypt)) {
-						System.err.println("Keywordi-i duhet te permbajt vetem shkronja");
+				} else if (args[1].equalsIgnoreCase("decrypt")) {
+					CipherTexti_PlayFair = args[3];
+					if (!PlayFair_Cipher.isAlphaAndSpaces(Keyword_PlayFair)) {
+						System.err.println("Keywordi eshte jo-valid.");
+						System.out.println(//
+								"Ju lutem perseritni hapat perseri dhe Keywordi duhet te permbaj vetem shkronja!!!");
 						return;
 					}
-					CipherTexti_PlayFair = args[3];
-					
+
+					PlayFair_Cipher.setKeyWord(Keyword_PlayFair);
+					PlayFair_Cipher.genMatrix();
 					PlayFair_Cipher.decrypt(CipherTexti_PlayFair);
-				}
-				else {
-					System.out.println("Kodi i ,ju keni shkruar zgjedhjen gabim: " + args[1]);
+				} else {
+					// throw new IllegalArgumentException("Sort type undefined");
+					System.err.println("Argumenti i zgjedhur " + args[1] + " eshte jo-valid.\n");
+					System.out.println("Mundesia e zgjedhjes eshte: encrypt ose decrypt.");
 				}
 			}
-			
-			if (args[0].equalsIgnoreCase("frekuenca")){
-// *******************************************--PLAYFAIR--***************************************
+
+			else if (args[0].equalsIgnoreCase("frekuenca")) {
+// *******************************************--FREKUENCA--***************************************
 				Frekuenca frekuenca = new Frekuenca();
 				frekuenca.Vepro(args[1]);
-
-			} 
-//			else {
-//				System.out.println("kod i panjohur!");
-//			}
-		}
-		catch (Exception e){
+				
+			} else {
+				// throw new IllegalArgumentException("Sort type undefined");
+				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
+				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca.");
+			}
+		} catch (Exception e) {
 			// Gotta catch 'em all!
-			System.out.println("ERROR!");
-			e.printStackTrace();
+			System.err.println("ERROR!");
 		}
 	}
 }

@@ -1,17 +1,24 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 public class Frekuenca {
 	public void Vepro(String str) {
-		
-		String str1=str.replace(" ", "");
+
+		str = str.replace(" ", "");
 		int[] freq = new int[str.length()];
 		int i, j;
 
-		char string[] = str1.toCharArray();
+		char string[] = str.toCharArray();
 		int n = 0;
 
-		for (i = 0; i < str1.length(); i++) {
+		for (i = 0; i < str.length(); i++) {
 			freq[i] = 1;
 
-			for (j = i + 1; j < str1.length(); j++) {
+			for (j = i + 1; j < str.length(); j++) {
 
 				if (string[i] == string[j]) {
 					freq[i]++;
@@ -20,7 +27,7 @@ public class Frekuenca {
 			}
 		}
 
-		for (i = 0; i < str1.length(); i++) {
+		for (i = 0; i < str.length(); i++) {
 
 			n++;
 
@@ -112,12 +119,51 @@ public class Frekuenca {
 		}
 
 		// Displays the each character and their corresponding frequency
+		HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
 		System.out.println(" \nTotal: " + n);
 		for (i = 0; i < freq.length; i++) {
-			if (string[i] != ' ' && string[i] != '0')
-				System.out.println(string[i] + ":" + freq[i] + " (" + perc[i] + "% )     " + bar[i]);
-
+			if (string[i] != ' ' && string[i] != '0') {
+//				System.out.println(string[i] + ":" + freq[i] + " (" + perc[i] + "%)  " + bar[i]);
+				hashMap.put(string[i] + ":" + freq[i] + " (" + perc[i] + "%)  " + bar[i],
+						Integer.parseInt(perc[i] + ""));
+			}
 		}
+
+		HashMap<String, Integer> sortedHash = sortHashMapByValues(hashMap);
+		for (String key : sortedHash.keySet()) {
+			System.out.println(key);
+		}
+
 	}
 
+	public HashMap<String, Integer> sortHashMapByValues(HashMap<String, Integer> passedMap) {
+		List<String> mapKeys = new ArrayList<>(passedMap.keySet());
+		List<Integer> mapValues = new ArrayList<>(passedMap.values());
+
+		Collections.sort(mapValues);
+		Collections.sort(mapKeys);
+
+		HashMap<String, Integer> sortedMap = new LinkedHashMap<>();
+
+		Iterator<Integer> valueIt = mapValues.iterator();
+		while (valueIt.hasNext()) {
+			Integer val = valueIt.next();
+			Iterator<String> keyIt = mapKeys.iterator();
+
+			while (keyIt.hasNext()) {
+				String key = keyIt.next();
+				Integer comp1 = passedMap.get(key);
+				Integer comp2 = val;
+
+				if (comp1.equals(comp2)) {
+					keyIt.remove();
+					sortedMap.put(key, val);
+					break;
+				}
+			}
+		}
+		return sortedMap;
+	}
 }
+// Referenca
+// https://www.javatpoint.com/java-program-to-find-the-frequency-of-characters

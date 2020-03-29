@@ -107,3 +107,7 @@ public class Vigenere_Cipher {
 		return PlainTexti;
 	}
 }
+//Referencat:
+//https://drive.google.com/drive/folders/0BxtEA9vzHIY-THpJVkQ3ck1SMGc
+//https://www.tutorialspoint.com/compile_java_online.php
+//https://www.youtube.com/watch?v=nQ8CThqEfQU

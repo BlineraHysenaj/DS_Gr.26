@@ -173,9 +173,12 @@ public class PlayFair_Cipher {
 			plaintext += decChB;
 			plaintext += " ";
 		}
-
-		System.out.println("teksti i enkriptuar eshte:" + removeSpaces(plaintext.toUpperCase().replace("I", "J")));
+		System.out.println("teksti i dekriptuar eshte:" + removeSpaces(plaintext.toUpperCase().replace("I", "J")));
 
 	}
 
 }
+//Referencat:
+//https://www.tutorialspoint.com/cplusplus-program-to-encode-a-message-using-playfair-cipher
+//https://www.geeksforgeeks.org/playfair-cipher-with-examples/
+//https://www.sanfoundry.com/java-program-decode-message-encoded-using-playfair-cipher/

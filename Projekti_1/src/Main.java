@@ -46,8 +46,7 @@ public class Main {
 				String PlainText_PlayFair = "";
 				String CipherTexti_PlayFair = "";
 				String Keyword_PlayFair = args[2];
-				
-				
+
 				if (args[1].equalsIgnoreCase("encrypt")) {
 					PlainText_PlayFair = args[3];
 					if (!PlayFair_Cipher.isAlphaAndSpaces(Keyword_PlayFair)) {
@@ -82,12 +81,24 @@ public class Main {
 // *******************************************--FREKUENCA--***************************************
 				Frekuenca frekuenca = new Frekuenca();
 				frekuenca.Vepro(args[1]);
-				
+			} else if (args[0].equalsIgnoreCase("create-user")) {
+				System.out.println("Komanda per create-user ");
+			} else if (args[0].equalsIgnoreCase("delete-user")) {
+				System.out.println("Komanda per delete-user ");
+			} else if (args[0].equalsIgnoreCase("import-key")) {
+				System.out.println("Komanda per import-key ");
+			} else if (args[0].equalsIgnoreCase("export-key")) {
+				System.out.println("Komanda per export-key ");
+			} else if (args[0].equalsIgnoreCase("write-message")) {
+				System.out.println("Komanda per write-message ");
+			} else if (args[0].equalsIgnoreCase("read-message")) {
+				System.out.println("Komanda per read-message ");
 			} else {
 				// throw new IllegalArgumentException("Sort type undefined");
 				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
 				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca.");
 			}
+
 		} catch (Exception e) {
 			// Gotta catch 'em all!
 			System.err.println("ERROR!");

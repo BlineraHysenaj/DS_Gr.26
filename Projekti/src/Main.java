@@ -93,13 +93,14 @@ public class Main {
 			}
 // *******************************************--CREATE-USER--****************************************
 			else if (args[0].equalsIgnoreCase("create-user")) {
-				if (rsa.checkFileIfExist(args[1])) {
-					//Duhet me shiku edhe nihere, se normal space nese e ban 
-					//vjen si argumenti 2
-					if (!rsa.validateName(args[1])) {
+				String PrivateKey = args[1] + ".xml";
+				String PublicKey = args[1] + ".pub.xml";
+
+				if (!rsa.checkFileIfExist(PrivateKey) || !rsa.checkFileIfExist(PublicKey)) {
+					if (!rsa.validateName(args[1]) && args.length <= 2) {
 						rsa.createUser(args[1]);
-						System.err.println(" Eshte krijuar celesi privat 'keys/" + args[1] + ".xml'");
-						System.err.println(" Eshte krijuar celesi public 'keys/" + args[1] + ".pub.xml'");
+						System.out.println(" Eshte krijuar celesi privat 'keys/" + PrivateKey + "'");
+						System.out.println(" Eshte krijuar celesi public 'keys/" + PublicKey + "'");
 					} else {
 						System.err.println("Karakteret nuk jan valide!");
 					}
@@ -110,7 +111,21 @@ public class Main {
 			}
 // *******************************************--DELETE-USER--****************************************
 			else if (args[0].equalsIgnoreCase("delete-user")) {
-				System.out.println("Komanda per delete-user ");
+				String PrivateKey = args[1] + ".xml";
+				String PublicKey = args[1] + ".pub.xml";
+
+				if (rsa.checkFileIfExist(PrivateKey)) {
+					if (rsa.deleteUser(PrivateKey)) {
+						System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'");
+					}
+				}
+				if (rsa.checkFileIfExist(PublicKey)) {
+					if (rsa.deleteUser(PublicKey)) {
+						System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'");
+					}
+				} else {
+					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
+				}
 			}
 // *******************************************--IMPORT-KEY--*****************************************
 			else if (args[0].equalsIgnoreCase("import-key")) {

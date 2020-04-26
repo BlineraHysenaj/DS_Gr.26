@@ -92,7 +92,7 @@ public class RSA {
 		return bytes;
 	}
 
-	private String getPrivateKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public String getPrivateKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PrivateKey key = kp.getPrivate();
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		RSAPrivateCrtKeySpec spec = keyFactory.getKeySpec(key, RSAPrivateCrtKeySpec.class);
@@ -113,7 +113,7 @@ public class RSA {
 		return sb.toString();
 	}
 
-	private String getPublicKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public String getPublicKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PublicKey key = kp.getPublic();
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		RSAPublicKeySpec spec = keyFactory.getKeySpec(key, RSAPublicKeySpec.class);
@@ -138,12 +138,12 @@ public class RSA {
 
 	public boolean checkFileIfExist(String name) {
 
-		String filePathString = keysPath + name + ".xml";
+		String filePathString = keysPath + name;
 
 		File file = new File(filePathString);
 		if (file.exists())
-			return false;
+			return true;
 
-		return true;
+		return false;
 	}
 }

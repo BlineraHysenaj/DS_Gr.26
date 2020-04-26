@@ -98,6 +98,8 @@ public class Main {
 					//vjen si argumenti 2
 					if (!rsa.validateName(args[1])) {
 						rsa.createUser(args[1]);
+						System.err.println(" Eshte krijuar celesi privat 'keys/" + args[1] + ".xml'");
+						System.err.println(" Eshte krijuar celesi public 'keys/" + args[1] + ".pub.xml'");
 					} else {
 						System.err.println("Karakteret nuk jan valide!");
 					}

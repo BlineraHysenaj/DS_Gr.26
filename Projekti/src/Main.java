@@ -1,8 +1,17 @@
+import java.io.File;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
 public class Main {
 
 	public static void main(String[] args) {
 		try {
-// ******************************************--VIEGENERE--************************************
+			RSA rsa = new RSA();			
+// ******************************************--VIEGENERE--*******************************************
 			if (args[0].equalsIgnoreCase("vigenere")) {
 				Vigenere_Cipher Vigenere = new Vigenere_Cipher();
 				String PlainText_Vigenere = "";
@@ -40,7 +49,7 @@ public class Main {
 
 			else if (args[0].equalsIgnoreCase("playfair")) {
 
-// *******************************************--PLAYFAIR--***************************************
+// *******************************************--PLAYFAIR--*******************************************
 				PlayFair_Cipher PlayFair_Cipher = new PlayFair_Cipher();
 
 				String PlainText_PlayFair = "";
@@ -78,30 +87,58 @@ public class Main {
 			}
 
 			else if (args[0].equalsIgnoreCase("frekuenca")) {
-// *******************************************--FREKUENCA--***************************************
+// *******************************************--FREKUENCA--******************************************
 				Frekuenca frekuenca = new Frekuenca();
 				frekuenca.Vepro(args[1]);
-			} else if (args[0].equalsIgnoreCase("create-user")) {
-				System.out.println("Komanda per create-user ");
-			} else if (args[0].equalsIgnoreCase("delete-user")) {
+			} 
+// *******************************************--CREATE-USER--****************************************
+			else if (args[0].equalsIgnoreCase("create-user")) {
+				if(!rsa.validateName(args[1])) {
+					rsa.createUser(args[1]);
+				}
+				else {
+					System.err.println("Karakteret nuk jan valide!");
+				}
+			}
+// *******************************************--DELETE-USER--****************************************
+			else if (args[0].equalsIgnoreCase("delete-user")) {
 				System.out.println("Komanda per delete-user ");
-			} else if (args[0].equalsIgnoreCase("import-key")) {
+			}
+// *******************************************--IMPORT-KEY--*****************************************
+			else if (args[0].equalsIgnoreCase("import-key")) {
 				System.out.println("Komanda per import-key ");
-			} else if (args[0].equalsIgnoreCase("export-key")) {
+			}
+// *******************************************--EXPORT-KEY--*****************************************	
+			else if (args[0].equalsIgnoreCase("export-key")) {
 				System.out.println("Komanda per export-key ");
-			} else if (args[0].equalsIgnoreCase("write-message")) {
+			}
+// *******************************************--WRITE-MESSAGE--**************************************
+			else if (args[0].equalsIgnoreCase("write-message")) {
 				System.out.println("Komanda per write-message ");
-			} else if (args[0].equalsIgnoreCase("read-message")) {
+			}
+// *******************************************--READ-MESSAGE--***************************************
+			else if (args[0].equalsIgnoreCase("read-message")) {
 				System.out.println("Komanda per read-message ");
-			} else {
+			}
+// *******************************************--HELP--***********************************************
+			else if (args[0].equalsIgnoreCase("help")) {
+				System.out.println("vigenere encrypy|decrypt key \"plaintext|cyphertext\" ");
+				System.out.println("palyfair encrypy|decrypt key \"plaintext|cyphertext\" ");
+				System.out.println("frekuenca \"teksti\" ");
+			}
+			else {
 				// throw new IllegalArgumentException("Sort type undefined");
 				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
 				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca.");
+				System.out.println("Nese nuk keni njohuri, shkruani \"HELP\" ");
 			}
 
-		} catch (Exception e) {
-			// Gotta catch 'em all!
-			System.err.println("ERROR!");
-		}
+		}catch(
+
+	
+	Exception e)
+	{
+		// Gotta catch 'em all!
+		System.err.println("ERROR!");
 	}
-}
+}}

@@ -26,3 +26,6 @@ vetëm (me prejashtim ndonjë tutoriali,por sidoçoftë kemi dhënë disa refere
                     ** 𝘔𝘦𝘯𝘺𝘳𝘢 𝘴𝘦 𝘴𝘪 𝘪 𝘬𝘦𝘮𝘪 𝘦𝘨𝘻𝘦𝘬𝘶𝘵𝘶𝘢𝘳 𝘬𝘰𝘮𝘢𝘯𝘥𝘢𝘵**
 Përmes 𝐛𝐚𝐭𝐜𝐡 𝐟𝐢𝐥𝐞. Kemi marr kodin, kemi ekstraktuar, më pas kemi fituar file-n 𝐌𝐚𝐢𝐧.𝐣𝐚𝐫 .Më pas për secilën komandë kemi bërë nga një file të re me prapashtesën 𝐛𝐚𝐭, ku ne te kemi shkruar Pathin (psh për komandën playfair)si në vijim: 𝒋𝒂𝒗𝒂 -𝒋𝒂𝒓 "𝑴𝒂𝒊𝒏.𝒋𝒂𝒓" "𝒑𝒍𝒂𝒚𝒇𝒂𝒊𝒓" 𝒆𝒏𝒄𝒓𝒚𝒑𝒕 "𝒌𝒆𝒚 " "𝑷𝒆𝒓𝒔𝒉𝒆𝒏𝒅𝒆𝒕𝒋𝒆 𝒏𝒈𝒂 𝑭𝒊𝒆𝒌" 𝒑𝒂𝒖𝒔𝒆, ose mënyra dyte, duke shkuar në pathin file-s tek i cili kemi vendosur shkurtesen '𝐜𝐦𝐝' dhe më pas është hapur konzolat për të marr  argumentet.
 Shembujt se si janë ekzekutuar, mund t'i gjeni tek fotot qe i kemi ngarkuar me siper.
+
+Referenca per Create-User:
+https://github.com/codybartfast/java-to-dotnet-signature/blob/master/CreateKeysJ/src/CreateKeysJ.java

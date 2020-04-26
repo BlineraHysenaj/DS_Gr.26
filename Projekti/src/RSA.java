@@ -13,12 +13,14 @@ import java.util.regex.Pattern;
 
 public class RSA {
 
+	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
+
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
 		try {
 			FileWriter out;
 
-			String pathPvtKey = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\" + name + ".xml";
-			String pathPubKey = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\" + name + ".pub.xml";
+			String pathPvtKey = keysPath + name + ".xml";
+			String pathPubKey = keysPath + name + ".pub.xml";
 
 			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
 			kpg.initialize(2048, new SecureRandom());
@@ -47,7 +49,7 @@ public class RSA {
 
 	public boolean deleteUser(String path) {
 
-		File file = new File("C:\\Sources\\DS_Gr.26\\Projekti\\src\\keys\\" + path);
+		File file = new File(keysPath + path);
 
 		if (file.delete()) {
 			return true;
@@ -128,9 +130,20 @@ public class RSA {
 
 	public boolean validateName(String name) {
 
-		Pattern p = Pattern.compile("[^a-zA-Z0-9_]");
+		Pattern p = Pattern.compile("[^a-zA-Z0-9_.]");
 		boolean hasSpecialChar = p.matcher(name).find();
 
 		return hasSpecialChar;
+	}
+
+	public boolean checkFileIfExist(String name) {
+
+		String filePathString = keysPath + name + ".xml";
+
+		File file = new File(filePathString);
+		if (file.exists())
+			return false;
+
+		return true;
 	}
 }

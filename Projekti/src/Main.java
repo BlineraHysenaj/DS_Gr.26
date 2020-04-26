@@ -10,7 +10,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			RSA rsa = new RSA();			
+			RSA rsa = new RSA();
 // ******************************************--VIEGENERE--*******************************************
 			if (args[0].equalsIgnoreCase("vigenere")) {
 				Vigenere_Cipher Vigenere = new Vigenere_Cipher();
@@ -90,15 +90,21 @@ public class Main {
 // *******************************************--FREKUENCA--******************************************
 				Frekuenca frekuenca = new Frekuenca();
 				frekuenca.Vepro(args[1]);
-			} 
+			}
 // *******************************************--CREATE-USER--****************************************
 			else if (args[0].equalsIgnoreCase("create-user")) {
-				if(!rsa.validateName(args[1])) {
-					rsa.createUser(args[1]);
+				if (rsa.checkFileIfExist(args[1])) {
+					//Duhet me shiku edhe nihere, se normal space nese e ban 
+					//vjen si argumenti 2
+					if (!rsa.validateName(args[1])) {
+						rsa.createUser(args[1]);
+					} else {
+						System.err.println("Karakteret nuk jan valide!");
+					}
+				} else {
+					System.err.println(" Celesi '" + args[1] + "' ekziston paraprakisht.");
 				}
-				else {
-					System.err.println("Karakteret nuk jan valide!");
-				}
+
 			}
 // *******************************************--DELETE-USER--****************************************
 			else if (args[0].equalsIgnoreCase("delete-user")) {
@@ -125,20 +131,18 @@ public class Main {
 				System.out.println("vigenere encrypy|decrypt key \"plaintext|cyphertext\" ");
 				System.out.println("palyfair encrypy|decrypt key \"plaintext|cyphertext\" ");
 				System.out.println("frekuenca \"teksti\" ");
-			}
-			else {
+			} else {
 				// throw new IllegalArgumentException("Sort type undefined");
 				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
 				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca.");
 				System.out.println("Nese nuk keni njohuri, shkruani \"HELP\" ");
 			}
 
-		}catch(
+		} catch (
 
-	
-	Exception e)
-	{
-		// Gotta catch 'em all!
-		System.err.println("ERROR!");
+		Exception e) {
+			// Gotta catch 'em all!
+			System.err.println("ERROR!");
+		}
 	}
-}}
+}

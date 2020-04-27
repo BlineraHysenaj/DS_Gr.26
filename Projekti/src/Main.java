@@ -129,7 +129,22 @@ public class Main {
 			}
 // *******************************************--IMPORT-KEY--*****************************************
 			else if (args[0].equalsIgnoreCase("import-key")) {
-				System.out.println("Komanda per import-key ");
+				if (rsa.checkFileIfExist1(args[2])) {
+						if (args[2].endsWith(".pub.xml")) {
+							String pub = args[1]+".pub.xml";
+						rsa.importKey(pub,args[2]);
+						System.out.println("Celesi publik u ruajt ne fajllin '" + pub + "'.");
+					}
+						else if (args[2].endsWith(".xml")) {
+							String v = args[1]+".xml";
+							rsa.importKey(v,args[2]);
+							System.out.println("Celesi privat u ruajt ne fajllin '" + v + "'.");
+							
+							String prv = args[2].replace(".xml", ".pub.xml");
+									rsa.importKey(v,prv);
+									System.out.println("Celesi publik u ruajt ne fajllin '" + args[1] + "'.");
+									
+							}
 			}
 // *******************************************--EXPORT-KEY--*****************************************	
 			else if (args[0].equalsIgnoreCase("export-key")) {

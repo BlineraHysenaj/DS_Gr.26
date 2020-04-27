@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -13,7 +14,8 @@ import java.util.regex.Pattern;
 
 public class RSA {
 
-	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
+	private final String keysPath = "C:\\Users\\Gentrina\\Documents\\GitHub\\DS_Gr.26\\Projekti\\src\\Keys\\";
+	private final String exportkeysPath="C:\\Users\\Gentrina\\Documents\\GitHub\\DS_Gr.26\\Projekti\\src\\export\\"
 
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
 		try {
@@ -59,8 +61,17 @@ public class RSA {
 
 	}
 
-	public void importKey() {
-		// TO DO
+public void importKey(String name, String path) throws IOException {
+		
+		FileWriter out;
+		String readFile = readFile( exportkeysPath+path );
+
+		File file = new File(keysPath + name);
+		out = new FileWriter(file, false);
+
+		out.write(readFile);
+		out.close();
+
 	}
 
 	public void exportKey() {
@@ -73,6 +84,27 @@ public class RSA {
 
 	public void readMessage() {
 		// TO DO
+	}
+
+	public String readFile(String filename) throws IOException {
+		String content = null;
+		File file = new File(filename); // For example, foo.txt
+//		System.out.println(filename);
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file);
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		return content;
 	}
 
 	private String convertFromBigIntToString(String name, BigInteger bigInt) {
@@ -146,4 +178,15 @@ public class RSA {
 
 		return false;
 	}
+	public boolean checkFileIfExist1(String name) {
+
+		String filePathString = exportkeysPath + name;
+
+		File file = new File(filePathString);
+		if (file.exists())
+			return true;
+
+		return false;
+	
+}
 }

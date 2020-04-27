@@ -132,9 +132,36 @@ public class Main {
 				System.out.println("Komanda per import-key ");
 			}
 // *******************************************--EXPORT-KEY--*****************************************	
-			else if (args[0].equalsIgnoreCase("export-key")) {
-				System.out.println("Komanda per export-key ");
-			}
+else if (args[0].equalsIgnoreCase("export-key")) {
+				
+				if(args[1].equalsIgnoreCase("private")|| args[1].equalsIgnoreCase("public")) 
+				{
+				 //rsa e kom shkru me 1 kta qe e zgjedhim na me 2 kta qe tdel kompjuterit
+				String PublicKey = args[2] + ".pub.xml";
+				String PrivateKey = args[2] + ".xml";
+                 if(args.length==3) {
+                if (rsa.checkFileIfExist(PrivateKey)) {
+				rsa.PrintKey(PrivateKey);
+				
+				}
+                
+				else if (rsa.checkFileIfExist(PublicKey)) {
+					
+					rsa.PrintKey(PublicKey);
+				}
+				else  {
+					System.out.println("Gabim: Celesi publik "+args[2]+ " nuk egziston");
+					}
+				}
+			
+			else {
+               if(rsa.checkFileIfExist(PublicKey)) {
+                    	  rsa.exportKey(PublicKey, args[3], args);
+	}	
+	  }
+         }
+			
+            }
 // *******************************************--WRITE-MESSAGE--**************************************
 			else if (args[0].equalsIgnoreCase("write-message")) {
 				System.out.println("Komanda per write-message ");

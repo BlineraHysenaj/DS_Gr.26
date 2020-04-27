@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -9,11 +11,12 @@ import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class RSA {
 
-	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
+	private final String keysPath = "C:\\Users\\Fehmi Hysenaj\\Desktop\\github\\DS_Gr.26\\Projekti\\src\\Keys\\";
 
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
 		try {
@@ -63,8 +66,22 @@ public class RSA {
 		// TO DO
 	}
 
-	public void exportKey() {
-		// TO DO
+	public void exportKey(String setKey,String path,String args[]) throws IOException {
+		final String exportPath="C:\\Users\\Fehmi Hysenaj\\Desktop\\github\\DS_Gr.26\\Projekti\\src\\Keys\\";
+		FileWriter out;
+		String readFile = readFile(keysPath + setKey);
+		File file = new File(exportPath + path);
+		if (args[1].equals("public"))
+        {
+            System.out.println("Celesi publik u ruajt ne filen  "+ args[3] );
+        }
+		else {
+			
+			 System.out.println("Celesi privat eshte ruajtur ne filen  "+args[3] );
+		}
+		out = new FileWriter(file, false);
+		out.write(readFile);
+		out.close();
 	}
 
 	public void writeMessage() {
@@ -127,6 +144,38 @@ public class RSA {
 
 		return sb.toString();
 	}
+	public String readFile(String filename) throws IOException {
+		String content = null;
+		File file = new File(filename); // For example, foo.txt
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file);
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		return content;
+	}
+
+	public void PrintKey(String privateKey) throws FileNotFoundException {
+		Scanner input = new Scanner(new File("foo.txt"));
+
+		while (input.hasNextLine())
+		{
+		   System.out.println(input.nextLine());
+		   input.close();
+		}
+		 }
+
+	
+}
 
 	public boolean validateName(String name) {
 

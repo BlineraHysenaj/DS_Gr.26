@@ -1,19 +1,32 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Scanner;
 import java.util.regex.Pattern;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class RSA {
 
 	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
+	private final String exportKeyPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Export\\";
+	private final String enkriptimiPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Enkriptimi\\";
+	private final static SecureRandom random = new SecureRandom();
 
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
 		try {
@@ -59,16 +72,86 @@ public class RSA {
 
 	}
 
-	public void importKey() {
-		// TO DO
+	public void exportKey(String setKey, String path) throws IOException {
+
+		FileWriter out;
+		String readFile = readFile(keysPath + setKey);
+
+		File file = new File(exportKeyPath + path);
+
+		out = new FileWriter(file, false);
+		out.write(readFile);
+		out.close();
 	}
 
-	public void exportKey() {
-		// TO DO
+	public void importKey(String setKey, String path) throws IOException {
+		FileWriter out;
+		String readFile = readFile(exportKeyPath + path);
+
+		File file = new File(keysPath + setKey);
+
+		out = new FileWriter(file, false);
+		out.write(readFile);
+		out.close();
 	}
 
-	public void writeMessage() {
-		// TO DO
+	public void writeMessage(String name, String message) {
+//		String plaintext;
+
+//   	name = emri i marresit te mesazhit
+//		pubkey = celesi publik i <name>
+//		iv = random 8 bytes
+//		key = random 8 bytes
+		
+//		encryptedKey = rsa(key, me pubkey)
+//		encryptedMessage = des(message, me key)
+//
+//		part1 = base64.encode( utf8.encode(name) )
+//		part2 = base64.encode(iv)
+//		part3 = base64.encode(encryptedKey)
+//		part4 = base64.encode(encryptedMessage)
+//
+//		return part1 + "." + part2 + "." + part3 + "." + part4
+		
+		SecureRandom random = new SecureRandom();
+		byte[] iv = new byte[8];
+		random.nextBytes(iv);
+		
+		byte[] key = new byte[8];
+		random.nextBytes(key);
+		//byte[] encryptedKey = rsa(key, me pubkey);
+		
+		String part1 = Base64.getEncoder().encodeToString(utf8(name));
+		String part2 = Base64.getEncoder().encodeToString(iv);
+		
+		
+	}
+	
+	public static byte[] encrypt(String data, String publicKey) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(publicKey));
+        return cipher.doFinal(data.getBytes());
+    }
+	
+	public static PublicKey getPublicKey(String base64PublicKey){
+        PublicKey publicKey = null;
+        try{
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.getBytes()));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            publicKey = keyFactory.generatePublic(keySpec);
+            return publicKey;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return publicKey;
+    }
+	
+	public static byte[] utf8(String name) {
+		String s = "some text here";
+		byte[] b = s.getBytes(StandardCharsets.UTF_8);
+		return b;
 	}
 
 	public void readMessage() {
@@ -146,4 +229,75 @@ public class RSA {
 
 		return false;
 	}
+
+	public String readFile(String filename) throws IOException {
+		String content = null;
+		File file = new File(filename);
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file);
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		return content;
+	}
+
+	public void PrintKey(String printKey)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, FileNotFoundException, IOException {
+
+		Scanner input = new Scanner(new File(keysPath + printKey));
+
+		while (input.hasNextLine()) {
+			System.out.println(input.nextLine());
+		}
+
+	}
+
+	public boolean checkFileIfExistIMPORT(String name) {
+
+		String filePathString = exportKeyPath + name;
+
+		File file = new File(filePathString);
+		if (file.exists())
+			return true;
+
+		return false;
+	}
+//	public void importGet(String url) throws IOException {
+//		//String url = "http://www.google.com/search?q=techndeck";
+//        URL urlObj = new URL(url);
+//        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+// 
+//        connection.setRequestMethod("GET");
+//        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+// 
+//        System.out.println("Send 'HTTP GET' request to : " + url);
+// 
+//        Integer responseCode = connection.getResponseCode();
+//        System.out.println("Response Code : " + responseCode);
+// 
+//        if (responseCode == HttpURLConnection.HTTP_OK) {
+//            BufferedReader inputReader = new BufferedReader(
+//                new InputStreamReader(connection.getInputStream()));
+//            String inputLine;
+//            StringBuffer response = new StringBuffer();
+// 
+//            while ((inputLine = inputReader.readLine()) != null) {
+//                response.append(inputLine);
+//            }
+// 
+//            inputReader.close();
+// 
+//            System.out.println(response.toString());
+//        }
+//	}
+
 }

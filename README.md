@@ -29,3 +29,6 @@ Shembujt se si janë ekzekutuar, mund t'i gjeni tek fotot qe i kemi ngarkuar me 
 
 Referenca per Create-User:
 https://github.com/codybartfast/java-to-dotnet-signature/blob/master/CreateKeysJ/src/CreateKeysJ.java
+Referenca per encrypt dhe decrypt:
+ https://github.com/only2dhir/rsaencryption/blob/master/src/main/java/com/devglan/rsa/RSAUtil.java
+ https://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file

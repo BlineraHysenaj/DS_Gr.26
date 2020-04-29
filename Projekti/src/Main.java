@@ -1,3 +1,5 @@
+package Projekti;
+
 import java.io.File;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
@@ -147,13 +149,53 @@ public class Main {
 							}
 			}
 // *******************************************--EXPORT-KEY--*****************************************	
-			else if (args[0].equalsIgnoreCase("export-key")) {
-				System.out.println("Komanda per export-key ");
-			}
+				else if (args[0].equalsIgnoreCase("export-key")) {
+					String PrivateKey = args[2] + ".xml";
+					String PublicKey = args[2] + ".pub.xml";
+					if (args.length == 3) {
+						
+					if (args[1].equalsIgnoreCase("private")) {
+
+							if (rsa.checkFileIfExist(PrivateKey)) {
+								rsa.PrintKey(PrivateKey);}
+							else {
+								System.err.println("Gabim: Celesi " + args[1] + " '" + args[2] + "' nuk ekziston.");
+							}
+							
+							} 
+					else if (args[1].equalsIgnoreCase("public")) {
+					if (rsa.checkFileIfExist(PublicKey)) {
+								rsa.PrintKey(PublicKey);
+							} else {
+								System.err.println("Gabim: Celesi " + args[1] + " '" + args[2] + "' nuk ekziston.");
+							}
+						}}
+					else if (args.length == 4) {
+						if(args[1].equalsIgnoreCase("public")) {
+							if (rsa.checkFileIfExist(PublicKey)) {
+								rsa.exportKey(PublicKey,args[3]);
+								System.out.println("Celesi publik u ruajt ne fajllin '" + args[3] + "'.");
+							}}
+							else if (args[1].equalsIgnoreCase("private")) {
+							if(rsa.checkFileIfExist(PrivateKey)) {
+								rsa.exportKey(PrivateKey,args[3]);
+								System.out.println("Celesi privat u ruajt ne fajllin '" + args[3] + "'.");
+							}						
+						}
+					 }else {
+						System.out.println("Ju duhet te zgjedheni nese doni ta bani export celsin public|private !");
+					}
+				}
 // *******************************************--WRITE-MESSAGE--**************************************
-			else if (args[0].equalsIgnoreCase("write-message")) {
-				System.out.println("Komanda per write-message ");
-			}
+				else if (args[0].equalsIgnoreCase("write-message")) {
+					String PublicKey = args[1] + ".pub.xml";
+					if (rsa.checkFileIfExist(PublicKey)) {
+					rsa.writeMessage1(args[2],PublicKey );}
+					else {
+						System.err.println("Gabim: Celesi " + args[1]  + "' nuk ekziston.");
+					}
+					System.out.println("K////ge ");
+				}
 // *******************************************--READ-MESSAGE--***************************************
 			else if (args[0].equalsIgnoreCase("read-message")) {
 				System.out.println("Komanda per read-message ");

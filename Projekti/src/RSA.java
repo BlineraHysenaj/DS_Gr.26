@@ -26,6 +26,7 @@ public class RSA {
 	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
 	private final String exportKeyPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Export\\";
 	private final String enkriptimiPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Enkriptimi\\";
+	private final static String keysPathEncrypt = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Enkriptimi\\";
 	private final static SecureRandom random = new SecureRandom();
 
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
@@ -95,7 +96,7 @@ public class RSA {
 		out.close();
 	}
 
-	public void writeMessage(String name, String message) {
+	public void writeMessage(String name, String message) throws IOException {
 //		String plaintext;
 
 //   	name = emri i marresit te mesazhit
@@ -123,6 +124,22 @@ public class RSA {
 		
 		String part1 = Base64.getEncoder().encodeToString(utf8(name));
 		String part2 = Base64.getEncoder().encodeToString(iv);
+		
+		//the way how we kann write a file IN A PATH
+		/////////////////////////////////////////////////////////////////////////
+		String blerona = "hallo fiek";
+		Scanner input = new Scanner(System.in);
+		String in = input.nextLine();
+		
+		String path = keysPath + in +".pub.xml";
+		
+		File outPvtKey = new File(path);
+		FileWriter out;
+		out = new FileWriter(outPvtKey, false);
+		out.write(blerona);
+		out.close();
+/////////////////////////////////////////////////////////////////////////
+
 		
 		
 	}
@@ -271,33 +288,7 @@ public class RSA {
 
 		return false;
 	}
-//	public void importGet(String url) throws IOException {
-//		//String url = "http://www.google.com/search?q=techndeck";
-//        URL urlObj = new URL(url);
-//        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-// 
-//        connection.setRequestMethod("GET");
-//        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-// 
-//        System.out.println("Send 'HTTP GET' request to : " + url);
-// 
-//        Integer responseCode = connection.getResponseCode();
-//        System.out.println("Response Code : " + responseCode);
-// 
-//        if (responseCode == HttpURLConnection.HTTP_OK) {
-//            BufferedReader inputReader = new BufferedReader(
-//                new InputStreamReader(connection.getInputStream()));
-//            String inputLine;
-//            StringBuffer response = new StringBuffer();
-// 
-//            while ((inputLine = inputReader.readLine()) != null) {
-//                response.append(inputLine);
-//            }
-// 
-//            inputReader.close();
-// 
-//            System.out.println(response.toString());
-//        }
-//	}
+	
+
 
 }

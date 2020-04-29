@@ -158,25 +158,30 @@ public class Main {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
 				if (rsa.checkFileIfExistIMPORT(args[2])) {
-					rsa.importKey(PrivateKey,args[2]);
-					rsa.importKey(PublicKey,args[2]);
+					rsa.importKey(PrivateKey, args[2]);
+					rsa.importKey(PublicKey, args[2]);
 					System.out.println("Celesi privat u ruajt ne fajllin 'keys/" + PrivateKey + "'.");
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
-				}
-				else if (rsa.checkFileIfExistIMPORT(args[2])) {
-					rsa.importKey(PublicKey,args[2]);
+				} else if (rsa.checkFileIfExistIMPORT(args[2])) {
+					rsa.importKey(PublicKey, args[2]);
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 				}
 			}
 // *******************************************--WRITE-MESSAGE--**************************************
 			else if (args[0].equalsIgnoreCase("write-message")) {
-				//<name> MARRSI I MESAZHIT
-				//<message> MESAZHI QE DO TE ENKRIPTOHET
-				//[file] SHTEGUN E FILE-IT KU DO TE RUHET
-				String name = args[1];
-				String message = args[2];
-				//String file = args[3]; e bajm ma vone, osht opsional
-				rsa.writeMessage(name, message);
+				
+				String PublicKey = args[1] + ".pub.xml";
+				if (args.length == 3) {
+					if (rsa.checkFileIfExist(PublicKey)) {
+						rsa.writeMessage(PublicKey, args[2]);
+					}
+				}
+				else if (rsa.checkFileIfExist(args[2])){
+					
+				}
+				else {
+					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
+				}
 			}
 // *******************************************--READ-MESSAGE--***************************************
 			else if (args[0].equalsIgnoreCase("read-message")) {

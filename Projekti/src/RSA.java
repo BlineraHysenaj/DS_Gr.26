@@ -14,6 +14,11 @@ import java.util.Base64;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 public class RSA {
 
 	private final String keysPath = "C:\\Users\\Fehmi Hysenaj\\Desktop\\github\\DS_Gr.26\\Projekti\\src\\Keys\\";
@@ -174,8 +179,16 @@ public class RSA {
 		}
 		 }
 
-	
-}
+	public static String decrypt(byte[] data, PrivateKey privateKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        return new String(cipher.doFinal(data));
+    }
+  
+  public static String decrypt(String data, String base64PrivateKey) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+        return decrypt(Base64.getDecoder().decode(data.getBytes()), getPrivateKey(base64PrivateKey));
+    }
+
 
 	public boolean validateName(String name) {
 

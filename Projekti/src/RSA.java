@@ -24,10 +24,21 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 public class RSA {
+	
+	File file1 = new File("src\\Keys");
+	String keysPath1 = file1.getAbsolutePath();
+	String keysPath = keysPath1 +"\\";
+	
 
-	private final String keysPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Keys\\";
-	private final String exportKeyPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Export\\";
-	private final String enkriptimiPath = "C:\\Sources\\DS_Gr.26\\Projekti\\src\\Enkriptimi\\";	
+	File file2 = new File("src\\Enkriptimi");
+	String enkriptimiPath1 = file2.getAbsolutePath();
+	String enkriptimiPath = enkriptimiPath1+"\\";
+	
+	File file3 = new File("src\\Export");
+	String exportKeyPath1 = file3.getAbsolutePath();
+	String exportKeyPath = exportKeyPath1+"\\";
+	
+
 	
 	private Cipher encryptCipher = null;
 	//private Cipher decryptCipher = null;  -> um vyn per dektiptim te des-it

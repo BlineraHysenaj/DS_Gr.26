@@ -42,7 +42,7 @@ public class Main {
 
 			}
 
-			else if (args[0].equalsIgnoreCase("playfair")) {
+			else if (args[0].equalsIgnoreCase("playfair")) { 
 
 // *******************************************--PLAYFAIR--*******************************************
 				PlayFair_Cipher PlayFair_Cipher = new PlayFair_Cipher();
@@ -169,17 +169,16 @@ public class Main {
 			}
 // *******************************************--WRITE-MESSAGE--**************************************
 			else if (args[0].equalsIgnoreCase("write-message")) {
-				
+
 				String PublicKey = args[1] + ".pub.xml";
 				if (args.length == 3) {
 					if (rsa.checkFileIfExist(PublicKey)) {
-						rsa.writeMessage(PublicKey, args[2]);
+						System.out.println(rsa.writeMessage(args[1], args[2]));
 					}
-				}
-				else if (rsa.checkFileIfExist(args[2])){
-					
-				}
-				else {
+				} else if (rsa.checkFileIfExist(PublicKey)) {
+					rsa.writeMessage1(args[1], args[2], args[3]);
+					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
+				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
 				}
 			}
@@ -199,9 +198,7 @@ public class Main {
 				System.out.println("Nese nuk keni njohuri, shkruani \"HELP\" ");
 			}
 
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			// Gotta catch 'em all!
 			System.err.println("ERROR!");
 		}

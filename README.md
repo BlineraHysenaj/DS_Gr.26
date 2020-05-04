@@ -29,6 +29,9 @@ Shembujt se si janë ekzekutuar, mund t'i gjeni tek fotot qe i kemi ngarkuar me 
 
 Referenca per Create-User:
 https://github.com/codybartfast/java-to-dotnet-signature/blob/master/CreateKeysJ/src/CreateKeysJ.java
+Referenca per komanden write-message:
+https://www.w3schools.com/java/java_files_create. - Ruajtja e tekstit te enkriptuar ne path-in e dhene nga perdoruesi
+https://gist.github.com/ufologist/5581496 - ne kete link jemi bazuar per enkriptimin/dekriptimin e DES-it.
 Referenca per encrypt dhe decrypt:
  https://github.com/only2dhir/rsaencryption/blob/master/src/main/java/com/devglan/rsa/RSAUtil.java
  https://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file

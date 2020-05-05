@@ -146,6 +146,7 @@ public class RSA {
 
 		String[] parts = message.split("[.]");
 		String part1Split = parts[0];
+		byte[] part1B64 = Base64.getDecoder().decode(part1Split.getBytes());
 		String part1 = new String(part1B64, StandardCharsets.UTF_8);
 
 		String part2Split = parts[1];

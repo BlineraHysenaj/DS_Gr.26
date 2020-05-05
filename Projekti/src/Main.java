@@ -184,13 +184,19 @@ public class Main {
 			}
 // *******************************************--READ-MESSAGE--***************************************
 			else if (args[0].equalsIgnoreCase("read-message")) {
-				System.out.println("Komanda per read-message ");
+				rsa.readMessage(args[1]);
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {
-				System.out.println("vigenere encrypy|decrypt key \"plaintext|cyphertext\" ");
-				System.out.println("palyfair encrypy|decrypt key \"plaintext|cyphertext\" ");
-				System.out.println("frekuenca \"teksti\" ");
+				System.out.println(" vigenere encrypy|decrypt key \"plaintext|cyphertext\" ");
+				System.out.println(" palyfair encrypy|decrypt key \"plaintext|cyphertext\" ");
+				System.out.println(" frekuenca \"teksti\" ");
+				System.out.println(" create-user emri-i-fajllit ");
+				System.out.println(" delete-user emri-i-fajllit ");
+				System.out.println(" export-key <public|private> <name> [file]");
+				System.out.println(" import-key <name> <path> ");
+				System.out.println(" ds write-message <name> <message> [file] ");
+				System.out.println(" read-message <encrypted-message> ");
 			} else {
 				// throw new IllegalArgumentException("Sort type undefined");
 				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
@@ -199,8 +205,7 @@ public class Main {
 			}
 
 		} catch (Exception e) {
-			// Gotta catch 'em all!
-			System.err.println("ERROR!");
+			System.err.println("Error Message: " + e.toString());
 		}
 	}
 }

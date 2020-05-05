@@ -22,26 +22,24 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 public class RSA {
-	
-	File file1 = new File("src\\Keys");
-	String keysPath1 = file1.getAbsolutePath();
-	String keysPath = keysPath1 +"\\";
-	
 
-	File file2 = new File("src\\Enkriptimi");
-	String enkriptimiPath1 = file2.getAbsolutePath();
-	String enkriptimiPath = enkriptimiPath1+"\\";
-	
-	File file3 = new File("src\\Export");
-	String exportKeyPath1 = file3.getAbsolutePath();
-	String exportKeyPath = exportKeyPath1+"\\";
-	
+	private File file1 = new File("src\\Keys");
+	private String keysPath1 = file1.getAbsolutePath();
+	private String keysPath = keysPath1 + "\\";
 
-	
+	private File file2 = new File("src\\Enkriptimi");
+	private String enkriptimiPath1 = file2.getAbsolutePath();
+	private String enkriptimiPath = enkriptimiPath1 + "\\";
+
+	private File file3 = new File("src\\Export");
+	private String exportKeyPath1 = file3.getAbsolutePath();
+	private String exportKeyPath = exportKeyPath1 + "\\";
+
 	private Cipher encryptCipher = null;
-	//private Cipher decryptCipher = null;  -> um vyn per dektiptim te des-it
+	private Cipher decryptCipher = null;
 
 	public void createUser(String name) throws IOException, InvalidKeySpecException {
 		try {
@@ -108,67 +106,90 @@ public class RSA {
 	}
 
 	public String writeMessage(String name, String message) throws Exception {
-
-//		String plaintext;
-
-//   	name = emri i marresit te mesazhit
-//		pubkey = celesi publik i <name>
-//		iv = random 8 bytes
-//		key = random 8 bytes
-
-//		encryptedKey = rsa(key, me pubkey)
-//		encryptedMessage = des(message, me key)
-//
-//		part1 = base64.encode( utf8.encode(name) )
-//		part2 = base64.encode(iv)
-//		part3 = base64.encode(encryptedKey)
-//		part4 = base64.encode(encryptedMessage)
-//
-//		return part1 + "." + part2 + "." + part3 + "." + part4			
-
-		SecureRandom random = new SecureRandom();
 		byte[] iv = new byte[8];
-		random.nextBytes(iv);
+		IvParameterSpec ivSpec = new IvParameterSpec(iv);
+		
+		SecureRandom randomKey = new SecureRandom();
 		byte[] key = new byte[8];
-		random.nextBytes(key);
+		randomKey.nextBytes(key);
+
+		System.out.println("DES key Encrypt: " + Base64.getEncoder().encodeToString(key));
+		System.out.println("mesazhi: " + message);
 		
 		PublicKey publicKey = getPublicKeyFromXml(name);
-		byte[] ciperKey = encrypt(key, publicKey);
+		byte[] encryptedKey = rsaEncrypt(key, publicKey);
 
 		// DES
-		DESKeySpec key1 = new DESKeySpec(key);
+		DESKeySpec keySpec = new DESKeySpec(key);
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+
 		// Instantiate the encrypter
-		RSA crypt = new RSA(keyFactory.generateSecret(key1));		
-		String encryptedMessage = crypt.encryptBase64(message);
-		// Encrypted String:8dKft9vkZ4I=
+		encryptCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+		encryptCipher.init(Cipher.ENCRYPT_MODE, keyFactory.generateSecret(keySpec), ivSpec);
+		String encryptedMessage = encryptBase64DES(message);
 
 		String part1 = Base64.getEncoder().encodeToString(utf8(name));
 		String part2 = Base64.getEncoder().encodeToString(iv);
-		String part3 = Base64.getEncoder().encodeToString(ciperKey);
+		String part3 = Base64.getEncoder().encodeToString(encryptedKey);
 		String part4 = encryptedMessage;
-		return part1 + "." + part2 + "." + part3 + "." + part4;
-	}
-	public void writeMessage1(String name, String message, String path) throws Exception {
-		writeMessage(name,message);
-		FileWriter myWriter = new FileWriter(enkriptimiPath + path);
-        myWriter.write(writeMessage(name,message));
-        myWriter.close();
+
+		String plaintext = part1 + "." + part2 + "." + part3 + "." + part4;
 		
+		System.out.println("read-message \"" + plaintext + "\"");
+		
+		return plaintext;
 	}
 
-	public RSA(SecretKey key) throws Exception {
-		encryptCipher = Cipher.getInstance("DES");
-		// decryptCipher = Cipher.getInstance("DES");
-		encryptCipher.init(Cipher.ENCRYPT_MODE, key);
-		// decryptCipher.init(Cipher.DECRYPT_MODE, key);
+	public String readMessage(String message) throws Exception {
+		message = message.replace(" ", "");
+		// getPrivateKeyFromXml(String name);
+
+		String[] parts = message.split("[.]");
+		String part1Split = parts[0];
+		String part1 = new String(part1B64, StandardCharsets.UTF_8);
+
+		String part2Split = parts[1];
+		byte[] part2B64 = Base64.getDecoder().decode(part2Split.getBytes());
+		IvParameterSpec ivSpec = new IvParameterSpec(part2B64);
+		
+		if (parts.length == 4) {
+			String part3Split = parts[2];
+			byte[] part3B64 = Base64.getDecoder().decode(part3Split.getBytes());
+
+			PrivateKey privateKey = getPrivateKeyFromXml(part1);
+			byte[] key = rsaDecrypt(part3B64, privateKey);
+			System.out.println("DES key Decrypt: " + Base64.getEncoder().encodeToString(key));
+
+			String part4Split = parts[3];
+			// DES
+			DESKeySpec keySpec = new DESKeySpec(key);
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+
+			// Decrypt the string
+			decryptCipher = Cipher.getInstance("DES/CBC/NoPadding");
+			decryptCipher.init(Cipher.DECRYPT_MODE, keyFactory.generateSecret(keySpec), ivSpec);
+			String decryptedMessage = decryptBase64DES(part4Split);
+			// UnEncrypted String:Message
+			System.out.println("Result decrypted Text:" + decryptedMessage);
+
+		} else {
+			if (checkFileIfExist(enkriptimiPath + part1 + ".txt")) {
+				String readfile = readFile(enkriptimiPath + part1 + ".txt");
+			}
+		}
+
+		return "OK, duhet Teksti i Dekriptum";
 	}
 
-	public RSA() {
-		// TODO Auto-generated constructor stub
+	public void writeMessage1(String name, String message, String path) throws Exception {
+
+		FileWriter myWriter = new FileWriter(enkriptimiPath + path);
+		myWriter.write(writeMessage(name, message));
+		myWriter.close();
+
 	}
 
-	public String encryptBase64(String unencryptedString) throws Exception {
+	public String encryptBase64DES(String unencryptedString) throws Exception {
 		// Encode the string into bytes using utf-8
 		byte[] unencryptedByteArray = unencryptedString.getBytes("UTF8");
 
@@ -181,7 +202,35 @@ public class RSA {
 		return new String(encodedBytes);
 	}
 
-	public PublicKey getPublicKeyFromXml(String name)
+	public String decryptBase64DES(String encryptedString) throws Exception {
+		// Encode bytes to base64 to get a string
+		byte[] decodedBytes = Base64.getEncoder().encode(encryptedString.getBytes());
+
+		// Decrypt
+		byte[] unencryptedByteArray = decryptCipher.doFinal(decodedBytes);
+
+		// Decode using utf-8
+		return new String(unencryptedByteArray, "UTF8");
+	}
+
+	public byte[] rsaEncrypt(byte[] data, PublicKey publicKey) throws BadPaddingException, IllegalBlockSizeException,
+			InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, UnsupportedEncodingException {
+
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		cipher.init(Cipher.PUBLIC_KEY, publicKey);
+		return cipher.doFinal(data);
+	}
+
+	private byte[] rsaDecrypt(byte[] part3, PrivateKey privateKey) throws NoSuchAlgorithmException,
+			NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		cipher.init(Cipher.PRIVATE_KEY, privateKey);
+		return cipher.doFinal(part3);
+
+	}
+
+	private PublicKey getPublicKeyFromXml(String name)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
 		String readfile = readFile(keysPath + name + ".pub.xml").replaceAll("\\s", "");
@@ -198,106 +247,92 @@ public class RSA {
 		return publicKey;
 	}
 
-	public static byte[] encrypt(byte[] data, PublicKey publicKey)
-			throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException,
-			NoSuchAlgorithmException, UnsupportedEncodingException {
+	private PrivateKey getPrivateKeyFromXml(String name)
+			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		String readfile = readFile(keysPath + name + ".xml").replaceAll("\\s", "");
+		final Pattern pattern = Pattern.compile(
+				"<Modulus>(.+?)</Modulus><Exponent>(.+?)</Exponent><P>(.+?)</P><Q>(.+?)</Q><DP>(.+?)</DP><DQ>(.+?)</DQ><InverseQ>(.+?)</InverseQ><D>(.+?)</D>",
+				Pattern.DOTALL);
+		final Matcher matcher = pattern.matcher(readfile);
+		matcher.find();
 
-		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-		return cipher.doFinal(data);
+		BigInteger moduls = new BigInteger(matcher.group(1));
+		BigInteger exponent = new BigInteger(matcher.group(2));
+		BigInteger P = new BigInteger(matcher.group(3));
+		BigInteger Q = new BigInteger(matcher.group(4));
+		BigInteger DP = new BigInteger(matcher.group(5));
+		BigInteger DQ = new BigInteger(matcher.group(6));
+		BigInteger InverseQ = new BigInteger(matcher.group(7));
+		BigInteger D = new BigInteger(matcher.group(8));
+
+		RSAPrivateCrtKeySpec keySpec = new RSAPrivateCrtKeySpec(moduls, exponent, D, P, Q, DP, DQ, InverseQ);
+		KeyFactory kf = KeyFactory.getInstance("RSA");
+		PrivateKey privateKey = kf.generatePrivate(keySpec);
+
+		return privateKey;
+
 	}
 
-	public static byte[] utf8(String name) {
-		byte[] b = name.getBytes(StandardCharsets.UTF_8);
-		return b;
-	}
-
-	public void readMessage() {
-		// TO DO
-	}
-
-	private String convertFromBigIntToString(String name, BigInteger bigInt) {
+	private String FormatString(String name, BigInteger bigInt) {
 //		byte[] bytesFromBigInt = getBytesFromBigInt(bigInt);
 //		String elementContent = Base64.getEncoder().encodeToString(bytesFromBigInt);
-//
 //		byte[] bytesFromString = Base64.getDecoder().decode(elementContent);
-//		
-//		
-//		System.out.println("Key: " + elementContent + "\n");
 
 		return "<" + name + ">" + bigInt + "</" + name + ">";
 	}
 
-	private byte[] getBytesFromBigInt(BigInteger bigInt) {
-		byte[] bytes = bigInt.toByteArray();
-		int length = bytes.length;
+//	private byte[] getBytesFromBigInt(BigInteger bigInt) {
+//		byte[] bytes = bigInt.toByteArray();
+//		int length = bytes.length;
+//
+//		// In any case, it creates arrays of 129 bytes rather than the
+//		// expected 128 bytes. So if the array's length is odd and the
+//		// leading byte is zero then trim the leading byte.
+//		if (length % 2 != 0 && bytes[0] == 0) {
+//			bytes = Arrays.copyOfRange(bytes, 1, length);
+//		}
+//
+//		return bytes;
+//	}
 
-		// In any case, it creates arrays of 129 bytes rather than the
-		// expected 128 bytes. So if the array's length is odd and the
-		// leading byte is zero then trim the leading byte.
-		if (length % 2 != 0 && bytes[0] == 0) {
-			bytes = Arrays.copyOfRange(bytes, 1, length);
-		}
-
-		return bytes;
+	private byte[] utf8(String name) {
+		byte[] b = name.getBytes(StandardCharsets.UTF_8);
+		return b;
 	}
 
 	public String getPrivateKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PrivateKey key = kp.getPrivate();
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		RSAPrivateCrtKeySpec spec = keyFactory.getKeySpec(key, RSAPrivateCrtKeySpec.class);
-
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("<RSAKeyValue>");
-		sb.append(convertFromBigIntToString("Modulus", spec.getModulus()));
-		sb.append(convertFromBigIntToString("Exponent", spec.getPublicExponent()));
-		sb.append(convertFromBigIntToString("P", spec.getPrimeP()));
-		sb.append(convertFromBigIntToString("Q", spec.getPrimeQ()));
-		sb.append(convertFromBigIntToString("DP", spec.getPrimeExponentP()));
-		sb.append(convertFromBigIntToString("DQ", spec.getPrimeExponentQ()));
-		sb.append(convertFromBigIntToString("InverseQ", spec.getCrtCoefficient()));
-		sb.append(convertFromBigIntToString("D", spec.getPrivateExponent()));
+		sb.append(FormatString("Modulus", spec.getModulus()));
+		sb.append(FormatString("Exponent", spec.getPublicExponent()));
+		sb.append(FormatString("P", spec.getPrimeP()));
+		sb.append(FormatString("Q", spec.getPrimeQ()));
+		sb.append(FormatString("DP", spec.getPrimeExponentP()));
+		sb.append(FormatString("DQ", spec.getPrimeExponentQ()));
+		sb.append(FormatString("InverseQ", spec.getCrtCoefficient()));
+		sb.append(FormatString("D", spec.getPrivateExponent()));
 		sb.append("</RSAKeyValue>");
 
 		return sb.toString();
 	}
 
-	public String getPublicKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	private String getPublicKeyAsXML(KeyPair kp) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		PublicKey key = kp.getPublic();
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		RSAPublicKeySpec spec = keyFactory.getKeySpec(key, RSAPublicKeySpec.class);
-
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("<RSAKeyValue>");
-		sb.append(convertFromBigIntToString("Modulus", spec.getModulus()));
-		sb.append(convertFromBigIntToString("Exponent", spec.getPublicExponent()));
+		sb.append(FormatString("Modulus", spec.getModulus()));
+		sb.append(FormatString("Exponent", spec.getPublicExponent()));
 		sb.append("</RSAKeyValue>");
 
 		return sb.toString();
 	}
 
-	public boolean validateName(String name) {
-
-		Pattern p = Pattern.compile("[^a-zA-Z0-9_.]");
-		boolean hasSpecialChar = p.matcher(name).find();
-
-		return hasSpecialChar;
-	}
-
-	public boolean checkFileIfExist(String name) {
-
-		String filePathString = keysPath + name;
-
-		File file = new File(filePathString);
-		if (file.exists())
-			return true;
-
-		return false;
-	}
-
-	public String readFile(String filename) throws IOException {
+	private String readFile(String filename) throws IOException {
 		String content = null;
 		File file = new File(filename);
 		FileReader reader = null;
@@ -321,17 +356,19 @@ public class RSA {
 			throws NoSuchAlgorithmException, InvalidKeySpecException, FileNotFoundException, IOException {
 
 		Scanner input = new Scanner(new File(keysPath + printKey));
-
 		while (input.hasNextLine()) {
 			System.out.println(input.nextLine());
 		}
-
 	}
 
-	public boolean checkFileIfExistIMPORT(String name) {
+	public boolean validateName(String name) {
+		Pattern p = Pattern.compile("[^a-zA-Z0-9_.]");
+		boolean hasSpecialChar = p.matcher(name).find();
+		return hasSpecialChar;
+	}
 
-		String filePathString = exportKeyPath + name;
-
+	public boolean checkFileIfExist(String name) {
+		String filePathString = keysPath + name;
 		File file = new File(filePathString);
 		if (file.exists())
 			return true;
@@ -339,4 +376,12 @@ public class RSA {
 		return false;
 	}
 
+	public boolean checkFileIfExistIMPORT(String name) {
+		String filePathString = exportKeyPath + name;
+		File file = new File(filePathString);
+		if (file.exists())
+			return true;
+
+		return false;
+	}
 }

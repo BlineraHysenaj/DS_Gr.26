@@ -7,10 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -106,26 +106,29 @@ public class RSA {
 	}
 
 	public String writeMessage(String name, String message) throws Exception {
+		// initialization vector
 		byte[] iv = new byte[8];
-		IvParameterSpec ivSpec = new IvParameterSpec(iv);
-		
+		AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
+
 		SecureRandom randomKey = new SecureRandom();
 		byte[] key = new byte[8];
 		randomKey.nextBytes(key);
 
 		System.out.println("DES key Encrypt: " + Base64.getEncoder().encodeToString(key));
-		System.out.println("mesazhi: " + message);
-		
+
 		PublicKey publicKey = getPublicKeyFromXml(name);
 		byte[] encryptedKey = rsaEncrypt(key, publicKey);
 
 		// DES
 		DESKeySpec keySpec = new DESKeySpec(key);
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+		SecretKey secretKey = keyFactory.generateSecret(keySpec);
 
-		// Instantiate the encrypter
+		System.out.println("DES SecretKey Encrypt: " + Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+
 		encryptCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-		encryptCipher.init(Cipher.ENCRYPT_MODE, keyFactory.generateSecret(keySpec), ivSpec);
+		encryptCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+
 		String encryptedMessage = encryptBase64DES(message);
 
 		String part1 = Base64.getEncoder().encodeToString(utf8(name));
@@ -134,16 +137,15 @@ public class RSA {
 		String part4 = encryptedMessage;
 
 		String plaintext = part1 + "." + part2 + "." + part3 + "." + part4;
-		
+
 		System.out.println("read-message \"" + plaintext + "\"");
-		
+
 		return plaintext;
 	}
 
 	public String readMessage(String message) throws Exception {
+		String decryptedMessage = "";
 		message = message.replace(" ", "");
-		// getPrivateKeyFromXml(String name);
-
 		String[] parts = message.split("[.]");
 		String part1Split = parts[0];
 		byte[] part1B64 = Base64.getDecoder().decode(part1Split.getBytes());
@@ -151,8 +153,8 @@ public class RSA {
 
 		String part2Split = parts[1];
 		byte[] part2B64 = Base64.getDecoder().decode(part2Split.getBytes());
-		IvParameterSpec ivSpec = new IvParameterSpec(part2B64);
-		
+		AlgorithmParameterSpec ivSpec = new IvParameterSpec(part2B64);
+
 		if (parts.length == 4) {
 			String part3Split = parts[2];
 			byte[] part3B64 = Base64.getDecoder().decode(part3Split.getBytes());
@@ -165,13 +167,14 @@ public class RSA {
 			// DES
 			DESKeySpec keySpec = new DESKeySpec(key);
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			SecretKey secretKey = keyFactory.generateSecret(keySpec);
 
-			// Decrypt the string
-			decryptCipher = Cipher.getInstance("DES/CBC/NoPadding");
-			decryptCipher.init(Cipher.DECRYPT_MODE, keyFactory.generateSecret(keySpec), ivSpec);
-			String decryptedMessage = decryptBase64DES(part4Split);
-			// UnEncrypted String:Message
-			System.out.println("Result decrypted Text:" + decryptedMessage);
+			System.out.println("DES SecretKey Decrypt: " + Base64.getEncoder().encodeToString(secretKey.getEncoded()));
+
+			decryptCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+			decryptCipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+
+			decryptedMessage = decryptBase64DES(part4Split);
 
 		} else {
 			if (checkFileIfExist(enkriptimiPath + part1 + ".txt")) {
@@ -179,7 +182,7 @@ public class RSA {
 			}
 		}
 
-		return "OK, duhet Teksti i Dekriptum";
+		return decryptedMessage;
 	}
 
 	public void writeMessage1(String name, String message, String path) throws Exception {
@@ -190,31 +193,23 @@ public class RSA {
 
 	}
 
-	public String encryptBase64DES(String unencryptedString) throws Exception {
-		// Encode the string into bytes using utf-8
+	private String encryptBase64DES(String unencryptedString) throws Exception {
+
 		byte[] unencryptedByteArray = unencryptedString.getBytes("UTF8");
-
-		// Encrypt
 		byte[] encryptedBytes = encryptCipher.doFinal(unencryptedByteArray);
-
-		// Encode bytes to base64 to get a string
 		byte[] encodedBytes = Base64.getEncoder().encode(encryptedBytes);
 
 		return new String(encodedBytes);
 	}
 
-	public String decryptBase64DES(String encryptedString) throws Exception {
-		// Encode bytes to base64 to get a string
-		byte[] decodedBytes = Base64.getEncoder().encode(encryptedString.getBytes());
+	private String decryptBase64DES(String encryptedString) throws Exception {
+		byte[] decodedBytes = Base64.getDecoder().decode(encryptedString.getBytes());
+		byte[] decryptedByteArray = decryptCipher.doFinal(decodedBytes);
 
-		// Decrypt
-		byte[] unencryptedByteArray = decryptCipher.doFinal(decodedBytes);
-
-		// Decode using utf-8
-		return new String(unencryptedByteArray, "UTF8");
+		return new String(decryptedByteArray, "UTF8");
 	}
 
-	public byte[] rsaEncrypt(byte[] data, PublicKey publicKey) throws BadPaddingException, IllegalBlockSizeException,
+	private byte[] rsaEncrypt(byte[] data, PublicKey publicKey) throws BadPaddingException, IllegalBlockSizeException,
 			InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, UnsupportedEncodingException {
 
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
@@ -275,26 +270,8 @@ public class RSA {
 	}
 
 	private String FormatString(String name, BigInteger bigInt) {
-//		byte[] bytesFromBigInt = getBytesFromBigInt(bigInt);
-//		String elementContent = Base64.getEncoder().encodeToString(bytesFromBigInt);
-//		byte[] bytesFromString = Base64.getDecoder().decode(elementContent);
-
 		return "<" + name + ">" + bigInt + "</" + name + ">";
 	}
-
-//	private byte[] getBytesFromBigInt(BigInteger bigInt) {
-//		byte[] bytes = bigInt.toByteArray();
-//		int length = bytes.length;
-//
-//		// In any case, it creates arrays of 129 bytes rather than the
-//		// expected 128 bytes. So if the array's length is odd and the
-//		// leading byte is zero then trim the leading byte.
-//		if (length % 2 != 0 && bytes[0] == 0) {
-//			bytes = Arrays.copyOfRange(bytes, 1, length);
-//		}
-//
-//		return bytes;
-//	}
 
 	private byte[] utf8(String name) {
 		byte[] b = name.getBytes(StandardCharsets.UTF_8);

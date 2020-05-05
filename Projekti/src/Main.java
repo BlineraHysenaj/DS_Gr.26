@@ -42,7 +42,7 @@ public class Main {
 
 			}
 
-			else if (args[0].equalsIgnoreCase("playfair")) { 
+			else if (args[0].equalsIgnoreCase("playfair")) {
 
 // *******************************************--PLAYFAIR--*******************************************
 				PlayFair_Cipher PlayFair_Cipher = new PlayFair_Cipher();
@@ -184,7 +184,7 @@ public class Main {
 			}
 // *******************************************--READ-MESSAGE--***************************************
 			else if (args[0].equalsIgnoreCase("read-message")) {
-				rsa.readMessage(args[1]);
+				System.out.println(rsa.readMessage(args[1]));
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {

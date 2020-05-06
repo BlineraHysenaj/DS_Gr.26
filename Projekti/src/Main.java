@@ -1,6 +1,3 @@
-import java.io.File;
-import java.security.KeyPair;
-
 public class Main {
 
 	public static void main(String[] args) {
@@ -91,7 +88,7 @@ public class Main {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
 
-				if (!rsa.checkFileIfExist(PrivateKey) || !rsa.checkFileIfExist(PublicKey)) {
+				if (!rsa.checkFileIfExist(rsa.keysPath, PrivateKey) || !rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
 					if (!rsa.validateName(args[1]) && args.length <= 2) {
 						rsa.createUser(args[1]);
 						System.out.println(" Eshte krijuar celesi privat 'keys/" + PrivateKey + "'");
@@ -109,13 +106,17 @@ public class Main {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
 
-				if (rsa.checkFileIfExist(PrivateKey)) {
-					if (rsa.deleteUser(PrivateKey)) {
-						System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'");
+				if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
+					if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
+						if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
+							System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'");
+							System.out.println("Eshte larguar celesi privat 'keys/" + PublicKey + "'");
+						} else {
+							System.err.println("Ju nuk mund ta fshini celesin privat sepse nuk egziston celesi publik");
+						}
 					}
-				}
-				if (rsa.checkFileIfExist(PublicKey)) {
-					if (rsa.deleteUser(PublicKey)) {
+				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+					if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
 						System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'");
 					}
 				} else {
@@ -124,46 +125,61 @@ public class Main {
 			}
 // *******************************************--EXPORT-KEY--*****************************************	
 			else if (args[0].equalsIgnoreCase("export-key")) {
-				if (args[1].equalsIgnoreCase("private") || args[1].equalsIgnoreCase("public")) {
+				if (args[1].equalsIgnoreCase("private")) {
 					String PrivateKey = args[2] + ".xml";
-					String PublicKey = args[2] + ".pub.xml";
 					if (args.length == 3) {
-						if (rsa.checkFileIfExist(PrivateKey)) {
-							rsa.PrintKey(PrivateKey);
-						} else if (rsa.checkFileIfExist(PublicKey)) {
-							rsa.PrintKey(PublicKey);
+						if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
+							rsa.printKey(PrivateKey);
 						} else {
 							System.err.println("Gabim: Celesi " + args[1] + " '" + args[2] + "' nuk ekziston.");
 						}
 					} else {
-						if (rsa.checkFileIfExist(PublicKey)) {
-							rsa.exportKey(PublicKey, args[3]);
-							System.out.println("Celesi publik u ruajt ne fajllin '" + args[3] + "'.");
-						} else if (rsa.checkFileIfExist(PrivateKey)) {
+						if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
 							rsa.exportKey(PrivateKey, args[3]);
 							System.out.println("Celesi privat u ruajt ne fajllin '" + args[3] + "'.");
 						}
 					}
+				} else if (args[1].equalsIgnoreCase("public")) {
+					String PublicKey = args[2] + ".pub.xml";
+
+					if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+						if (args.length == 3) {
+							if ((rsa.checkFileIfExist(rsa.keysPath, PublicKey))) {
+								rsa.printKey(PublicKey);
+							} else {
+								System.err.println("Gabim: Celesi " + args[1] + " '" + args[2] + "' nuk ekziston.");
+							}
+						} else {
+							rsa.exportKey(PublicKey, args[3]);
+							System.out.println("Celesi publik u ruajt ne fajllin '" + args[3] + "'.");
+						}
+					}
 				} else {
-					System.out.println("Ju duhet te zgjedheni nese doni ta bani export celsin public|private !");
+					System.out.println("Ju duhet te zgjedheni nese doni ta beni export celsin public|private!");
 				}
 			}
 // *******************************************--IMPORT-KEY--*****************************************
 			else if (args[0].equalsIgnoreCase("import-key")) {
-//				String search  = "http";
-//				if ( args[2].toLowerCase().indexOf(search.toLowerCase()) != -1 ) {
-//				   rsa.importGet(args[3]);
-//
-//				}
+				// merre emrin e file qe do te ruhet
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-				if (rsa.checkFileIfExistIMPORT(args[2])) {
-					rsa.importKey(PrivateKey, args[2]);
-					rsa.importKey(PublicKey, args[2]);
-					System.out.println("Celesi privat u ruajt ne fajllin 'keys/" + PrivateKey + "'.");
-					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
-				} else if (rsa.checkFileIfExistIMPORT(args[2])) {
-					rsa.importKey(PublicKey, args[2]);
+				String PrivateKeyImport = args[2];
+				String[] splitKey = PrivateKeyImport.split("_");
+				
+				String PublicKeyImport = splitKey[0] + "_public.xml";
+
+				// kontrollo nese egziston export-key
+				if (rsa.checkFileIfExist(rsa.exportKeyPath, args[2])) {// import-key import exportKey.txt
+					if (rsa.checkTheFile(PrivateKeyImport) == "private") {
+						if (rsa.checkFileIfExist(rsa.exportKeyPath, PublicKeyImport)) {
+							rsa.importKey(PrivateKeyImport, PrivateKey);
+							rsa.importKey(PublicKeyImport, PublicKey);
+							System.out.println("Celesi privat u ruajt ne fajllin 'keys/" + PrivateKey + "'.");
+							System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
+						}
+					}
+				} else if (rsa.checkFileIfExist(rsa.enkriptimiPath, args[2])) {
+					rsa.importKey(args[2], PublicKey);
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 				}
 			}
@@ -172,11 +188,11 @@ public class Main {
 
 				String PublicKey = args[1] + ".pub.xml";
 				if (args.length == 3) {
-					if (rsa.checkFileIfExist(PublicKey)) {
+					if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
 						System.out.println(rsa.writeMessage(args[1], args[2]));
 					}
-				} else if (rsa.checkFileIfExist(PublicKey)) {
-					rsa.writeMessage1(args[1], args[2], args[3]);
+				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+					rsa.writeMessageIntoFile(args[1], args[2], args[3]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
 				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
@@ -184,7 +200,20 @@ public class Main {
 			}
 // *******************************************--READ-MESSAGE--***************************************
 			else if (args[0].equalsIgnoreCase("read-message")) {
-				System.out.println(rsa.readMessage(args[1]));
+				String message = args[1];
+				// E bejme split mesazhin e enkriptuar ne baze te pikes(".")
+				message = message.replace(" ", "");
+				String[] parts = message.split("[.]");
+
+				if (parts.length == 4) {
+					String part1Split = parts[0];
+					String part2Split = parts[1];
+					String part3Split = parts[2];
+					String part4Split = parts[3];
+					rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
+				} else {
+					rsa.readMessageIntoFile(args[1]);
+				}
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {

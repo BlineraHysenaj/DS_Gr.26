@@ -165,7 +165,7 @@ public class Main {
 				String PublicKey = args[1] + ".pub.xml";
 				String PrivateKeyImport = args[2];
 				String[] splitKey = PrivateKeyImport.split("_");
-				
+
 				String PublicKeyImport = splitKey[0] + "_public.xml";
 
 				// kontrollo nese egziston export-key
@@ -181,6 +181,10 @@ public class Main {
 				} else if (rsa.checkFileIfExist(rsa.enkriptimiPath, args[2])) {
 					rsa.importKey(args[2], PublicKey);
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
+				} else if (args[2].contains("http")) {
+					rsa.importOnlineKey(PublicKey, args[2]);
+				} else {
+					System.err.println("Gabim: Celesi '" + args[1] + "' ekziston paraprakisht.");
 				}
 			}
 // *******************************************--WRITE-MESSAGE--**************************************

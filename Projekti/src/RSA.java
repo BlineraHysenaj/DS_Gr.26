@@ -1,10 +1,15 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.AlgorithmParameterSpec;
@@ -104,6 +109,32 @@ public class RSA {
 		out = new FileWriter(file, false);
 		out.write(readFile);
 		out.close();
+
+	}
+
+	public void importOnlineKey(String exportName, String URLName) throws IOException {
+		if (URLName.contains("http")) {
+			String key = "";
+			// E merr URL-n e nje webfaqe-je
+	        URL url = new URL(URLName);
+	        URLConnection con = url.openConnection();
+	        InputStream is =con.getInputStream();
+	        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	        String line = null;
+	        // lexon cdo rresht dhe e ruan ne variablen 'keys' 
+	        while ((line = br.readLine()) != null) {
+	        	key += line + "";
+	        }
+	        // Export-o file-in
+			FileWriter out;
+			File file = new File(keysPath + exportName);
+			out = new FileWriter(file, false);
+			out.write(key);
+			out.close();	        
+
+		}else {
+			System.out.println("Gabim: URL-ja e dhene nuk permban celes valid.");
+		}
 	}
 
 	public String writeMessage(String name, String message) throws Exception {

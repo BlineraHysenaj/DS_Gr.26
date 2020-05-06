@@ -1,1 +1,29 @@
 #REFERENCAT
+
+-Referenca per Create-User:
+
+https://github.com/codybartfast/java-to-dotnet-signature/blob/master/CreateKeysJ/src/CreateKeysJ.java
+
+-Referenca per komanden write-message:
+
+- RSA
+https://github.com/only2dhir/rsaencryption/blob/master/src/main/java/com/devglan/rsa/RSAUtil.java 
+
+-Get absolut path
+https://stackoverflow.com/questions/31466448/how-to-get-the-file-absolute-path-in-java-project
+
+- Si ta marrim PublicKey
+https://stackoverflow.com/questions/24756420/how-to-get-the-rsa-public-key-from-private-key-object-in-java
+
+- Ruajtja e tekstit te enkriptuar ne path-in e dhene nga perdoruesi 
+https://www.w3schools.com/java/java_files_create. 
+
+- Enkriptimi/Dekriptimi e DES-it.
+https://gist.github.com/ufologist/5581496 
+
+- Ruajtja e tekstit te enkriptuar ne path-in e dhene nga perdoruesi
+https://www.w3schools.com/java/java_files_create. 
+
+-Referenca per encrypt dhe decrypt:
+ https://github.com/only2dhir/rsaencryption/blob/master/src/main/java/com/devglan/rsa/RSAUtil.java
+ https://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file

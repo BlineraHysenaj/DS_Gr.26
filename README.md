@@ -16,22 +16,22 @@ Ekzekutimi dhe Kompajllimi i tyre bëhet përmes argumenteve.
 Siashtu kjo komandë i përmbahet kërkesave të projektit, pra emrat përmbajnë vetëm simbolet A-Z, a-z, 0-9,
 dhe _, dhe nuk përmbajnë hapësira.    
 **Ekzekutimi:**  
-create-user <test >
+create-user test 
 
 * Komanda e dytë e fshin userin e krijuar më parë, pra i largon celësat ekzistues të user-it.  
 **Ekzekutimi:**  
-delete-user <test >  
+delete-user test  
   
 * Komanda e tretë e eksporton celësin privat ose publik nga direktorumi i celësave.  
 Pra ne ja jepim mundësinë shfrytëzuesit që me zgjedh cilin nga celësat dëshiron me i eksportu.  
 Siashtu edhe përmes argumentit opcional [file] kemi përcaktu shtegun e fajjlit se ku do ruhet celësi i eksportuar.  
 Nese ky argument mungon celesi vetem paraqitet ne console  
 **Ekzekutimi:**  
-export-key <public|private> <test> [test.xml]
+export-key public|private test [test.xml]
   
 * Komanda e katert e importon celesin nga shtegu i kerkuar ne direktorumin e celësave  
 Nese celesi qe do te importohet eshte privat automatikisht me te importohet edhe celesi publik qe te ruhen bashke ne direktorumin e celesave   
-Me ane te argumentit <name> percaktojme emrin e celesit qe ruhet ne direktorum
+Me ane te argumentit <name> percaktojme emrin e celesit qe ruhet ne direktorum  
 **Ekzekutimi:**
 import-key fiek test.pub.xml  
   

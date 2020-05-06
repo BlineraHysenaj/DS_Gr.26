@@ -26,17 +26,17 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class RSA {
 
-	private File file1 = new File("src\\Keys");
-	private String keysPath1 = file1.getAbsolutePath();
-	private String keysPath = keysPath1 + "\\";
+	public File fileKeys = new File("src\\Keys");
+	public String getKeysPath = fileKeys.getAbsolutePath();
+	public String keysPath = getKeysPath + "\\";
 
-	private File file2 = new File("src\\Enkriptimi");
-	private String enkriptimiPath1 = file2.getAbsolutePath();
-	private String enkriptimiPath = enkriptimiPath1 + "\\";
+	public File fileEnkriptimi = new File("src\\Enkriptimi");
+	public String getEnkriptimiPath = fileEnkriptimi.getAbsolutePath();
+	public String enkriptimiPath = getEnkriptimiPath + "\\";
 
-	private File file3 = new File("src\\Export");
-	private String exportKeyPath1 = file3.getAbsolutePath();
-	private String exportKeyPath = exportKeyPath1 + "\\";
+	public File fileExport = new File("src\\Export");
+	public String getExportKeyPath = fileExport.getAbsolutePath();
+	public String exportKeyPath = getExportKeyPath + "\\";
 
 	private Cipher encryptCipher = null;
 	private Cipher decryptCipher = null;
@@ -45,23 +45,23 @@ public class RSA {
 		try {
 			FileWriter out;
 
-			String pathPvtKey = keysPath + name + ".xml";
-			String pathPubKey = keysPath + name + ".pub.xml";
+			String pathPrivatetKey = keysPath + name + ".xml";
+			String pathPublicKey = keysPath + name + ".pub.xml";
 
 			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
 			kpg.initialize(2048, new SecureRandom());
 			KeyPair kp = kpg.generateKeyPair();
 
-			File outPvtKey = new File(pathPvtKey);
-			File outPubKey = new File(pathPubKey);
+			File outPrivatetKey = new File(pathPrivatetKey);
+			File outPublicKey = new File(pathPublicKey);
 
-			// Save Private Key
-			out = new FileWriter(outPvtKey, false);
+			// Ruaj ne File Private Key
+			out = new FileWriter(outPrivatetKey, false);
 			out.write(getPrivateKeyAsXML(kp));
 			out.close();
 
-			// Save Public Key
-			out = new FileWriter(outPubKey, false);
+			// Ruaj ne File Public Key
+			out = new FileWriter(outPublicKey, false);
 			out.write(getPublicKeyAsXML(kp));
 			out.close();
 
@@ -70,133 +70,142 @@ public class RSA {
 		}
 	}
 
-	public boolean deleteUser(String path) {
+	public boolean deleteUser(String keysPath, String path) {
 
 		File file = new File(keysPath + path);
-
 		if (file.delete()) {
 			return true;
 		} else {
 			return false;
 		}
-
 	}
 
-	public void exportKey(String setKey, String path) throws IOException {
+	public void exportKey(String keysName, String exportName) throws IOException {
 
 		FileWriter out;
-		String readFile = readFile(keysPath + setKey);
+		// Lexo file-in
+		String readFile = readFile(keysPath + keysName);
 
-		File file = new File(exportKeyPath + path);
-
+		// Export-o file-in
+		File file = new File(exportKeyPath + exportName);
 		out = new FileWriter(file, false);
 		out.write(readFile);
 		out.close();
 	}
 
-	public void importKey(String setKey, String path) throws IOException {
+	public void importKey(String exportName, String keysName) throws IOException {
+
+		// Lexo file-in
+		String readFile = readFile(exportKeyPath + exportName);
+
+		// Export-o file-in
 		FileWriter out;
-		String readFile = readFile(exportKeyPath + path);
-
-		File file = new File(keysPath + setKey);
-
+		File file = new File(keysPath + keysName);
 		out = new FileWriter(file, false);
 		out.write(readFile);
 		out.close();
 	}
 
 	public String writeMessage(String name, String message) throws Exception {
-		// initialization vector
+		// Inicializojm variablen iv, si 8 bajteshe
 		byte[] iv = new byte[8];
 		AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
 
 		SecureRandom randomKey = new SecureRandom();
+		// Inicializojm variablen key, si 8 bajteshe random
 		byte[] key = new byte[8];
 		randomKey.nextBytes(key);
 
-		System.out.println("DES key Encrypt: " + Base64.getEncoder().encodeToString(key));
-
+		// Merr PublicKey nga xml File-i
 		PublicKey publicKey = getPublicKeyFromXml(name);
+		// E enkriptojm me algoritmin RSA 'key' me PublicKey
 		byte[] encryptedKey = rsaEncrypt(key, publicKey);
 
-		// DES
+		// DES algoritmi
 		DESKeySpec keySpec = new DESKeySpec(key);
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
 		SecretKey secretKey = keyFactory.generateSecret(keySpec);
-
-		System.out.println("DES SecretKey Encrypt: " + Base64.getEncoder().encodeToString(secretKey.getEncoded()));
-
 		encryptCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
 		encryptCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
 
+		// Enkriptojm ne Base64 mesazhin e dhene nga user-i
 		String encryptedMessage = encryptBase64DES(message);
 
+		// I kthejm vlerat e gjeneruara ne Base64
 		String part1 = Base64.getEncoder().encodeToString(utf8(name));
 		String part2 = Base64.getEncoder().encodeToString(iv);
 		String part3 = Base64.getEncoder().encodeToString(encryptedKey);
 		String part4 = encryptedMessage;
-
 		String plaintext = part1 + "." + part2 + "." + part3 + "." + part4;
-
-		System.out.println("read-message \"" + plaintext + "\"");
 
 		return plaintext;
 	}
 
-	public String readMessage(String message) throws Exception {
+	public void writeMessageIntoFile(String name, String message, String path) throws Exception {
+
+		// Merr file ku deshiron ta ruaj tekstin e enkriptuar
+		FileWriter myWriter = new FileWriter(enkriptimiPath + path);
+		// Shkruaj ne ate file tekstin e enkriptuar
+		myWriter.write(writeMessage(name, message));
+		myWriter.close();
+	}
+
+	public void readMessage(String part1Split, String part2Split, String part3Split, String part4Split)
+			throws Exception {
 		String decryptedMessage = "";
-		message = message.replace(" ", "");
-		String[] parts = message.split("[.]");
-		String part1Split = parts[0];
+
+		// Kthejm mesazhin e marrur qe e kemi ndar e kthejm ne Base64, e pastaj ne utf-8
 		byte[] part1B64 = Base64.getDecoder().decode(part1Split.getBytes());
 		String part1 = new String(part1B64, StandardCharsets.UTF_8);
 
-		String part2Split = parts[1];
-		byte[] part2B64 = Base64.getDecoder().decode(part2Split.getBytes());
-		AlgorithmParameterSpec ivSpec = new IvParameterSpec(part2B64);
+		if (!checkFileIfExist(keysPath, part1 + ".xml")) { // kontrollojm nese egziston PrivateKey ne File
+			System.out.println("Gabim: Celesi privat 'keys/" + part1 + ".xml' nuk ekziston");
+		} else {
+			// Merr PrivateKey nga xml File-i
+			PrivateKey privateKey = getPrivateKeyFromXml(part1);
 
-		if (parts.length == 4) {
-			String part3Split = parts[2];
+			byte[] part2B64 = Base64.getDecoder().decode(part2Split.getBytes());
+			AlgorithmParameterSpec ivSpec = new IvParameterSpec(part2B64);
 			byte[] part3B64 = Base64.getDecoder().decode(part3Split.getBytes());
 
-			PrivateKey privateKey = getPrivateKeyFromXml(part1);
+			// E dekriptojm 'part3B64' me privateKey
 			byte[] key = rsaDecrypt(part3B64, privateKey);
-			System.out.println("DES key Decrypt: " + Base64.getEncoder().encodeToString(key));
 
-			String part4Split = parts[3];
-			// DES
+			// DES algoritmi
 			DESKeySpec keySpec = new DESKeySpec(key);
 			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
 			SecretKey secretKey = keyFactory.generateSecret(keySpec);
-
-			System.out.println("DES SecretKey Decrypt: " + Base64.getEncoder().encodeToString(secretKey.getEncoded()));
-
 			decryptCipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
 			decryptCipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
+			// E dekriptojm ne Base64 mesazhin e ndare te pjeses se katert
 			decryptedMessage = decryptBase64DES(part4Split);
 
-		} else {
-			if (checkFileIfExist(enkriptimiPath + part1 + ".txt")) {
-				String readfile = readFile(enkriptimiPath + part1 + ".txt");
-			}
+			System.out.println("Marresi: " + part1);
+			System.out.println("Mesazhi: " + decryptedMessage);
 		}
-
-		return decryptedMessage;
 	}
 
-	public void writeMessage1(String name, String message, String path) throws Exception {
+	public void readMessageIntoFile(String path) throws Exception {
 
-		FileWriter myWriter = new FileWriter(enkriptimiPath + path);
-		myWriter.write(writeMessage(name, message));
-		myWriter.close();
-
+		// E merr qka ka brenda File-it
+		String readFile = readFile(enkriptimiPath + path);
+		readFile = readFile.replace(" ", "");
+		String[] parts = readFile.split("[.]"); // e bejem split kontentin e File-it
+		String part1Split = parts[0];
+		String part2Split = parts[1];
+		String part3Split = parts[2];
+		String part4Split = parts[3];
+		readMessage(part1Split, part2Split, part3Split, part4Split);
 	}
 
 	private String encryptBase64DES(String unencryptedString) throws Exception {
 
+		// Merr bajtat e Mesazhit te pa enkriptuar
 		byte[] unencryptedByteArray = unencryptedString.getBytes("UTF8");
+		// Enkripton bajtat e dhene
 		byte[] encryptedBytes = encryptCipher.doFinal(unencryptedByteArray);
+		// Kthen bajtat e marrur ne Base64
 		byte[] encodedBytes = Base64.getEncoder().encode(encryptedBytes);
 
 		return new String(encodedBytes);
@@ -229,6 +238,7 @@ public class RSA {
 	private PublicKey getPublicKeyFromXml(String name)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
+		// E marrim PublicKey nga File-i i dhene
 		String readfile = readFile(keysPath + name + ".pub.xml").replaceAll("\\s", "");
 		final Pattern pattern = Pattern.compile("<Modulus>(.+?)</Modulus><Exponent>(.+?)</Exponent>", Pattern.DOTALL);
 		final Matcher matcher = pattern.matcher(readfile);
@@ -245,6 +255,8 @@ public class RSA {
 
 	private PrivateKey getPrivateKeyFromXml(String name)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+		// E marrim PrivateKey nga File-i i dhene
 		String readfile = readFile(keysPath + name + ".xml").replaceAll("\\s", "");
 		final Pattern pattern = Pattern.compile(
 				"<Modulus>(.+?)</Modulus><Exponent>(.+?)</Exponent><P>(.+?)</P><Q>(.+?)</Q><DP>(.+?)</DP><DQ>(.+?)</DQ><InverseQ>(.+?)</InverseQ><D>(.+?)</D>",
@@ -269,11 +281,12 @@ public class RSA {
 
 	}
 
-	private String FormatString(String name, BigInteger bigInt) {
+	private String formatString(String name, BigInteger bigInt) {
 		return "<" + name + ">" + bigInt + "</" + name + ">";
 	}
 
 	private byte[] utf8(String name) {
+		// Kthen emrin e File-it te dhene ne byte
 		byte[] b = name.getBytes(StandardCharsets.UTF_8);
 		return b;
 	}
@@ -284,14 +297,14 @@ public class RSA {
 		RSAPrivateCrtKeySpec spec = keyFactory.getKeySpec(key, RSAPrivateCrtKeySpec.class);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<RSAKeyValue>");
-		sb.append(FormatString("Modulus", spec.getModulus()));
-		sb.append(FormatString("Exponent", spec.getPublicExponent()));
-		sb.append(FormatString("P", spec.getPrimeP()));
-		sb.append(FormatString("Q", spec.getPrimeQ()));
-		sb.append(FormatString("DP", spec.getPrimeExponentP()));
-		sb.append(FormatString("DQ", spec.getPrimeExponentQ()));
-		sb.append(FormatString("InverseQ", spec.getCrtCoefficient()));
-		sb.append(FormatString("D", spec.getPrivateExponent()));
+		sb.append(formatString("Modulus", spec.getModulus()));
+		sb.append(formatString("Exponent", spec.getPublicExponent()));
+		sb.append(formatString("P", spec.getPrimeP()));
+		sb.append(formatString("Q", spec.getPrimeQ()));
+		sb.append(formatString("DP", spec.getPrimeExponentP()));
+		sb.append(formatString("DQ", spec.getPrimeExponentQ()));
+		sb.append(formatString("InverseQ", spec.getCrtCoefficient()));
+		sb.append(formatString("D", spec.getPrivateExponent()));
 		sb.append("</RSAKeyValue>");
 
 		return sb.toString();
@@ -303,21 +316,21 @@ public class RSA {
 		RSAPublicKeySpec spec = keyFactory.getKeySpec(key, RSAPublicKeySpec.class);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<RSAKeyValue>");
-		sb.append(FormatString("Modulus", spec.getModulus()));
-		sb.append(FormatString("Exponent", spec.getPublicExponent()));
+		sb.append(formatString("Modulus", spec.getModulus()));
+		sb.append(formatString("Exponent", spec.getPublicExponent()));
 		sb.append("</RSAKeyValue>");
 
 		return sb.toString();
 	}
 
-	private String readFile(String filename) throws IOException {
+	private String readFile(String fileName) throws IOException {
 		String content = null;
-		File file = new File(filename);
+		File file = new File(fileName);
 		FileReader reader = null;
 		try {
-			reader = new FileReader(file);
+			reader = new FileReader(file); // e merr File-in
 			char[] chars = new char[(int) file.length()];
-			reader.read(chars);
+			reader.read(chars); // i lexon cdo karakter ne File
 			content = new String(chars);
 			reader.close();
 		} catch (IOException e) {
@@ -330,10 +343,10 @@ public class RSA {
 		return content;
 	}
 
-	public void PrintKey(String printKey)
+	public void printKey(String fileName)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, FileNotFoundException, IOException {
 
-		Scanner input = new Scanner(new File(keysPath + printKey));
+		Scanner input = new Scanner(new File(keysPath + fileName));
 		while (input.hasNextLine()) {
 			System.out.println(input.nextLine());
 		}
@@ -345,21 +358,23 @@ public class RSA {
 		return hasSpecialChar;
 	}
 
-	public boolean checkFileIfExist(String name) {
-		String filePathString = keysPath + name;
-		File file = new File(filePathString);
+	public boolean checkFileIfExist(String path, String name) {
+
+		File file = new File(path + name);
 		if (file.exists())
 			return true;
-
 		return false;
 	}
 
-	public boolean checkFileIfExistIMPORT(String name) {
-		String filePathString = exportKeyPath + name;
-		File file = new File(filePathString);
-		if (file.exists())
-			return true;
+	public String checkTheFile(String exportName) throws IOException {
 
-		return false;
+		String search = "P";
+		String readFile = readFile(exportKeyPath + exportName);
+
+		if (readFile.toLowerCase().indexOf(search.toLowerCase()) != -1) {
+			return "private";
+		} else {
+			return "public";
+		}
 	}
 }

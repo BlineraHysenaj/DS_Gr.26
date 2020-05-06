@@ -131,7 +131,7 @@ public class RSA {
 			out = new FileWriter(file, false);
 			out.write(key);
 			out.close();	        
-
+			
 		}else {
 			System.out.println("Gabim: URL-ja e dhene nuk permban celes valid.");
 		}
@@ -381,6 +381,7 @@ public class RSA {
 		while (input.hasNextLine()) {
 			System.out.println(input.nextLine());
 		}
+		input.close();
 	}
 
 	public boolean validateName(String name) {

@@ -110,7 +110,7 @@ public class Main {
 					if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
 						if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
 							System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'");
-							System.out.println("Eshte larguar celesi privat 'keys/" + PublicKey + "'");
+							System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'");
 						} else {
 							System.err.println("Ju nuk mund ta fshini celesin privat sepse nuk egziston celesi publik");
 						}
@@ -163,13 +163,14 @@ public class Main {
 				// merre emrin e file qe do te ruhet
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-				String PrivateKeyImport = args[2];
-				String[] splitKey = PrivateKeyImport.split("_");
+				
+				String[] splitKey = args[2].split("_");
 
+				String PrivateKeyImport = splitKey[0] + "_private.xml";
 				String PublicKeyImport = splitKey[0] + "_public.xml";
 
 				// kontrollo nese egziston export-key
-				if (rsa.checkFileIfExist(rsa.exportKeyPath, args[2])) {// import-key import exportKey.txt
+				if (rsa.checkFileIfExist(rsa.exportKeyPath, PrivateKeyImport)) {// import-key import exportKey.txt
 					if (rsa.checkTheFile(PrivateKeyImport) == "private") {
 						if (rsa.checkFileIfExist(rsa.exportKeyPath, PublicKeyImport)) {
 							rsa.importKey(PrivateKeyImport, PrivateKey);
@@ -178,11 +179,12 @@ public class Main {
 							System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 						}
 					}
-				} else if (rsa.checkFileIfExist(rsa.enkriptimiPath, args[2])) {
+				} else if (rsa.checkFileIfExist(rsa.exportKeyPath, PublicKeyImport)) {
 					rsa.importKey(args[2], PublicKey);
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 				} else if (args[2].contains("http")) {
 					rsa.importOnlineKey(PublicKey, args[2]);
+					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey +"'.");
 				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' ekziston paraprakisht.");
 				}

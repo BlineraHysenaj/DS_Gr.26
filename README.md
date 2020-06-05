@@ -8,9 +8,11 @@ Në këtë fazë të projektit, kemi pas detyrë që me i implementu komandat:
 --Komanda Export-Key--  
 --Komanda Write-message--  
 --Komanda Read-message--  
+Kompajllimi behet ne kete menyre: Ne Web-Github, klikoni Clone or Download dhe pastaj klikoni Open in Desktop ose Download ZIP.
 Direktorumin e celesave e kemi ruajtur ne formatin .xml  
-Per te dalluar celesat publik nga ata privat, kemi perdorur parashtesen .pub.  
-Ekzekutimi dhe Kompajllimi i tyre bëhet përmes argumenteve.  
+Per te dalluar celesat publik nga ata privat, kemi perdorur mbaresen .pub.xml 
+ 
+Ekzekutimi i kerkesave behet permes Batch file, permes argumenteve ne Java dhe permes  Cmd-se.Ne rast se i ekzekutojme permes Cmd-se, fillimisht shkojme ne lokacionin ku e kemi projektin, e mandej pasi qe e kemi punuar ne gjuhen Java, ndermarrim keta hapa (1)"javac Main.java" (2) "Main java x-metoda x-key (psh create-user test).
 
 * Komanda e parë e krijon një user qe permban celesat e gjeneruar privat dhe publik dhe e ruan tek file-t me .xml
 Siashtu kjo komandë i përmbahet kërkesave të projektit, pra emrat përmbajnë vetëm simbolet A-Z, a-z, 0-9,

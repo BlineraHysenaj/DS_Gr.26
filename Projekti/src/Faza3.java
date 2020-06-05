@@ -49,4 +49,34 @@ public class Faza3 {
 		input.close();
 		return false;
 	}
-	
+	public void login(String shfrytezuesi) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		System.out.println("Jepni fjalekalimin: ");
+		String fjalkalimi = input.nextLine();
+		
+		String checkPass = get_SHA_512_SecurePassword(fjalkalimi, algorithmHash);
+		// Lexo file-in
+		String readFile = readFile(shfrytezuesitPath + shfrytezuesi);
+		if (checkPass.compareTo(readFile) == 0) {
+			System.out.println(readFile);
+		}
+		else {
+			System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
+		}
+		
+	}
+	public String get_SHA_512_SecurePassword(String passwordToHash, String salt){
+	    String generatedPassword = null;
+	    try {
+	        MessageDigest md = MessageDigest.getInstance("SHA-512");
+	        md.update(salt.getBytes(StandardCharsets.UTF_8));
+	        byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
+	        StringBuilder sb = new StringBuilder();
+	        for(int i=0; i< bytes.length ;i++){
+	            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+	        }
+	        generatedPassword = sb.toString();
+	    } catch (NoSuchAlgorithmException e) {
+	        e.printStackTrace();
+	    }
+	    return generatedPassword;
+	}

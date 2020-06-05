@@ -3,6 +3,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			RSA rsa = new RSA();
+			Faza3 faza3 = new Faza3();
 // ******************************************--VIEGENERE--*******************************************
 			if (args[0].equalsIgnoreCase("vigenere")) {
 				Vigenere_Cipher Vigenere = new Vigenere_Cipher();
@@ -87,17 +88,20 @@ public class Main {
 			else if (args[0].equalsIgnoreCase("create-user")) {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
+				if (faza3.checkPassword(args[1]) == true) {
 
-				if (!rsa.checkFileIfExist(rsa.keysPath, PrivateKey) || !rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
-					if (!rsa.validateName(args[1]) && args.length <= 2) {
-						rsa.createUser(args[1]);
-						System.out.println(" Eshte krijuar celesi privat 'keys/" + PrivateKey + "'");
-						System.out.println(" Eshte krijuar celesi public 'keys/" + PublicKey + "'");
+					if (!rsa.checkFileIfExist(rsa.keysPath, PrivateKey)
+							|| !rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+						if (!rsa.validateName(args[1]) && args.length <= 2) {
+							rsa.createUser(args[1]);
+							System.out.println("Eshte krijuar celesi privat 'keys/" + PrivateKey + "'");
+							System.out.println("Eshte krijuar celesi public 'keys/" + PublicKey + "'");
+						} else {
+							System.err.println("Karakteret nuk jan valide!");
+						}
 					} else {
-						System.err.println("Karakteret nuk jan valide!");
+						System.err.println("Celesi '" + args[1] + "' ekziston paraprakisht.");
 					}
-				} else {
-					System.err.println(" Celesi '" + args[1] + "' ekziston paraprakisht.");
 				}
 
 			}
@@ -105,22 +109,27 @@ public class Main {
 			else if (args[0].equalsIgnoreCase("delete-user")) {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-
-				if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
-					if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
-						if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
-							System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'");
-							System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'");
-						} else {
-							System.err.println("Ju nuk mund ta fshini celesin privat sepse nuk egziston celesi publik");
+				if (rsa.deleteUser(faza3.shfrytezuesitPath, args[1] + ".xml")){
+					System.out.println("Eshte larguar shfrytezuesi '" + args[1]+ "'.");
+					if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
+						if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
+							if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
+								System.out.println("Eshte larguar celesi privat 'keys/" + PrivateKey + "'.");
+								System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'.");
+							} else {
+								System.err.println(
+										"Ju nuk mund ta fshini celesin privat sepse nuk egziston celesi publik.");
+							}
 						}
-					}
-				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
-					if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
-						System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'");
+					} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+						if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
+							System.out.println("Eshte larguar celesi publik 'keys/" + PublicKey + "'.");
+						}
+					} else {
+						System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
 					}
 				} else {
-					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
+					System.err.println("Nuk eshte fshir shfrytezuesi!.");
 				}
 			}
 // *******************************************--EXPORT-KEY--*****************************************	
@@ -163,7 +172,7 @@ public class Main {
 				// merre emrin e file qe do te ruhet
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-				
+
 				String[] splitKey = args[2].split("_");
 
 				String PrivateKeyImport = splitKey[0] + "_private.xml";
@@ -184,7 +193,7 @@ public class Main {
 					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 				} else if (args[2].contains("http")) {
 					rsa.importOnlineKey(PublicKey, args[2]);
-					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey +"'.");
+					System.out.println("Celesi publik u ruajt ne fajllin 'keys/" + PublicKey + "'.");
 				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' ekziston paraprakisht.");
 				}
@@ -200,7 +209,15 @@ public class Main {
 				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
 					rsa.writeMessageIntoFile(args[1], args[2], args[3]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
-				} else {
+				}
+				else if (args.length == 5) {					
+					faza3.writeMessage(args[1], args[2], args[3], args[4]);										
+				}
+				else if (args.length > 5) {
+					//faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
+					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
+				}
+				else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
 				}
 			}
@@ -220,6 +237,24 @@ public class Main {
 				} else {
 					rsa.readMessageIntoFile(args[1]);
 				}
+			}
+// *******************************************--LOGIN--**************************************
+			else if(args[0].equalsIgnoreCase("login")) {
+				String name =  args[1] + ".xml";
+				if(!args[1].isEmpty()) {
+					if (rsa.checkFileIfExist(faza3.shfrytezuesitPath, name)) {						
+						faza3.login(name);
+					}
+					else {
+						System.err.println("Shfryerzuesi '" + args[1] + "' nuk egziston.");
+					}
+				}else {
+					System.err.println("Ju lutem shkruani emrin tuaj si shfrytezues!");
+				}
+			}
+// *******************************************--LOGIN--**************************************
+			else if(args[0].equalsIgnoreCase("status")) {
+				
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {

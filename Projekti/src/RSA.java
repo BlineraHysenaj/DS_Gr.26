@@ -316,7 +316,7 @@ public class RSA {
 		return "<" + name + ">" + bigInt + "</" + name + ">";
 	}
 
-	private byte[] utf8(String name) {
+	public byte[] utf8(String name) {
 		// Kthen emrin e File-it te dhene ne byte
 		byte[] b = name.getBytes(StandardCharsets.UTF_8);
 		return b;

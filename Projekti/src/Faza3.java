@@ -80,3 +80,37 @@ public class Faza3 {
 	    }
 	    return generatedPassword;
 	}
+	private static int checkString(String str) {
+		char ch;
+		int count = 0;
+		boolean numberFlag = false;
+		for (int i = 0; i < str.length(); i++) {
+			ch = str.charAt(i);
+			if (Character.isDigit(ch)) {
+				numberFlag = true;
+				count++;
+			}
+			if (numberFlag)
+				return count;
+		}
+		return 0;
+	}
+	public String readFile(String fileName) throws IOException {
+		String content = null;
+		File file = new File(fileName);
+		FileReader reader = null;
+		try {
+			reader = new FileReader(file); // e merr File-in
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars); // i lexon cdo karakter ne File
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+		return content;
+	}

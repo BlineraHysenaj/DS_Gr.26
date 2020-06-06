@@ -109,8 +109,8 @@ public class Main {
 			else if (args[0].equalsIgnoreCase("delete-user")) {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-				if (rsa.deleteUser(faza3.shfrytezuesitPath, args[1] + ".txt")){
-					System.out.println("Eshte larguar shfrytezuesi '" + args[1]+ "'.");
+				if (rsa.deleteUser(faza3.shfrytezuesitPath, args[1] + ".txt")) {
+					System.out.println("Eshte larguar shfrytezuesi '" + args[1] + "'.");
 					if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
 						if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
 							if (rsa.deleteUser(rsa.keysPath, PublicKey)) {
@@ -209,15 +209,12 @@ public class Main {
 				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
 					rsa.writeMessageIntoFile(args[1], args[2], args[3]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
-				}
-				else if (args.length == 5) {					
-					faza3.writeMessage(args[1], args[2], args[3], args[4]);										
-				}
-				else if (args.length > 5) {
-					//faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
+				} else if (args.length == 5) { // faza3
+					faza3.writeMessage(args[1], args[2], args[3], args[4]);
+				} else if (args.length > 5) {
+					// faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
-				}
-				else {
+				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
 				}
 			}
@@ -238,23 +235,26 @@ public class Main {
 					rsa.readMessageIntoFile(args[1]);
 				}
 			}
-// *******************************************--LOGIN--**************************************
-			else if(args[0].equalsIgnoreCase("login")) {
-				String name =  args[1];
-				if(!args[1].isEmpty()) {
-					if (rsa.checkFileIfExist(faza3.shfrytezuesitPath, name + ".txt")) {						
+// *********************************************--LOGIN--********************************************
+			else if (args[0].equalsIgnoreCase("login")) {
+				String name = args[1];
+				if (!args[1].isEmpty()) {
+					if (rsa.checkFileIfExist(faza3.shfrytezuesitPath, name + ".txt")) {
 						faza3.login(name);
-					}
-					else {
+					} else {
 						System.err.println("Shfryerzuesi '" + args[1] + "' nuk egziston.");
 					}
-				}else {
+				} else {
 					System.err.println("Ju lutem shkruani emrin tuaj si shfrytezues!");
 				}
 			}
-// *******************************************--LOGIN--**************************************
-			else if(args[0].equalsIgnoreCase("status")) {
-				
+// *******************************************--STATUS--*********************************************
+			else if (args[0].equalsIgnoreCase("status")) {
+				if (faza3.statusToken(args[2], args[1]) == false) {
+					System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
+				} else if (faza3.statusToken(args[2], args[1]) == true) {
+					System.out.println("Token-i eshte ende valid");
+				}
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {

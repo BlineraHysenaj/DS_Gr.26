@@ -11,7 +11,10 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Scanner;
 import javax.crypto.SecretKeyFactory;
 
@@ -25,6 +28,7 @@ public class Faza3 {
 	public String getShfrytezuesitPath = fileShfrytezuesit.getAbsolutePath();
 	public String shfrytezuesitPath = getShfrytezuesitPath + "\\";
 	RSA rsa = new RSA();
+	JwtRSA jwtrsa = new JwtRSA();
 
 	public boolean checkPassword(String shfrytezuesi)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
@@ -61,22 +65,43 @@ public class Faza3 {
 		// Lexo file-in
 		String readFile = readFile(shfrytezuesitPath + shfrytezuesi + ".txt");
 		if (checkPass.compareTo(readFile) == 0) {
-			System.out.println("Token: " + GenerateToken(shfrytezuesi));
+			System.out.println("Token: " + generateToken(shfrytezuesi));
 		} else {
 			System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
 		}
-
 	}
 
-	public String GenerateToken(String shfrytezuesi)
+	public String generateToken(String shfrytezuesi)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-
-//		String privateKey = readFile(rsa.keysPath + shfrytezuesi + ".xml");
-//		System.out.println("privateKey" + privateKey);
 		PrivateKey privateKey = rsa.getPrivateKeyFromXml(shfrytezuesi);
+
+		String token = jwtrsa.generateToken(privateKey, shfrytezuesi);
+		// System.out.println("Token: " + token);
+
+		return token;
+	}
+
+	public boolean statusToken(String token, String shfrytezuesi)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+
 		PublicKey publicKey = rsa.getPublicKeyFromXml(shfrytezuesi);
-		
-		return "cc5793fcce9cdd9f33ba817a85b5a95be29b74ddd1d811a81dc109066cb73d8d93708a5a6cada7b";
+		ArrayList<String> claims = jwtrsa.verifyToken(token, publicKey);
+
+		String str = claims.get(2);
+		String[] arrOfStr = str.split(":");
+		long skadimi = Long.parseLong(arrOfStr[1].trim()) / 60000;
+		long kohaAktuale = System.currentTimeMillis() / 60000;
+
+		// Gjenerona Tokenin edhe nihere se kokan ba 22min, mir eshre
+		// System.out.println("Koha e krijimit te Tokenit: " + skadimi);
+		// System.out.println("Koha aktuale: " + kohaAktuale);
+		long difMin = (kohaAktuale - skadimi);
+		// System.out.println("Diferenca ne Minuta: " + difMin);//pse spo bahet execute
+		if (difMin > 20) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public String get_SHA_512_SecurePassword(String passwordToHash, String salt) {

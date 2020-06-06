@@ -143,3 +143,17 @@ public void login(String shfrytezuesi) throws IOException, NoSuchAlgorithmExcept
 	}
 
 }
+public void statusToken(String token, String shfrytezuesi)
+		throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+
+	PublicKey publicKey = rsa.getPublicKeyFromXml(shfrytezuesi);
+	ArrayList<String> claims = jwtrsa.verifyToken(token, publicKey);
+
+	String str = claims.get(2);
+	String[] arrOfStr = str.split(":");
+	long skadimi = Long.parseLong(arrOfStr[1].trim()) / 60000;
+	long kohaAktuale = System.currentTimeMillis() / 60000;
+
+	
+	}
+}

@@ -1,22 +1,10 @@
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Base64;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Scanner;
 import javax.crypto.SecretKeyFactory;
 
 import javax.crypto.spec.PBEKeySpec;
-
 public class Faza3 {
 	private String algorithmHash = "SHA-512";
 	private Scanner input = new Scanner(System.in);

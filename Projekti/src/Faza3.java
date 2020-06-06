@@ -12,6 +12,7 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.Scanner;
 import javax.crypto.SecretKeyFactory;
+
 import javax.crypto.spec.PBEKeySpec;
 
 public class Faza3 {
@@ -32,9 +33,8 @@ public class Faza3 {
 			System.out.println("Perserit fjalekalimin: ");
 			String password2 = input.nextLine();
 			if (password1.compareTo(password2) == 0) {
-				;
 				// Merr file ku deshiron ta ruaj tekstin e enkriptuar
-				FileWriter myWriter = new FileWriter(shfrytezuesitPath + shfrytezuesi + ".xml");
+				FileWriter myWriter = new FileWriter(shfrytezuesitPath + shfrytezuesi + ".txt");
 				// Shkruaj ne ate file tekstin
 				// myWriter.write(hashPassword(password1).toString());
 				myWriter.write(get_SHA_512_SecurePassword(password1, algorithmHash));

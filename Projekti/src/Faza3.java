@@ -129,3 +129,17 @@ public class Faza3 {
 		String faza3 = faza2 + "." + part5 + ".";
 	}
 }
+public void login(String shfrytezuesi) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	System.out.println("Jepni fjalekalimin: ");
+	String fjalkalimi = input.nextLine();
+
+	String checkPass = get_SHA_512_SecurePassword(fjalkalimi, algorithmHash);
+	
+	String readFile = readFile(shfrytezuesitPath + shfrytezuesi + ".txt");
+	if (checkPass.compareTo(readFile) == 0) {
+		System.out.println("Token: " + generateToken(shfrytezuesi));
+	} else {
+		System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
+	}
+
+}

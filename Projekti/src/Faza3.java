@@ -154,10 +154,12 @@ public void statusToken(String token, String shfrytezuesi)
 	long skadimi = Long.parseLong(arrOfStr[1].trim()) / 60000;
 	long kohaAktuale = System.currentTimeMillis() / 60000;
 
-	
+	// Gjenerona Tokenin edhe nihere se kokan ba 22min, mir eshre
+	// System.out.println("Koha e krijimit te Tokenit: " + skadimi);
+	// System.out.println("Koha aktuale: " + kohaAktuale);
 	long difMin = (kohaAktuale - skadimi);
 
-	
+	// System.out.println("Diferenca ne Minuta: " + difMin);//pse spo bahet execute
 	if (difMin > 20) {
 		System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
 	} else {

@@ -13,6 +13,7 @@ import java.util.Base64;
 import java.util.Scanner;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+
 public class Faza3 {
 	private String algorithmHash = "SHA-512";
 	private Scanner input = new Scanner(System.in);
@@ -24,7 +25,7 @@ public class Faza3 {
 
 	public boolean checkPassword(String shfrytezuesi)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		
+
 		System.out.println("Jepni fjalekalimin: ");
 		String password1 = input.nextLine();
 		if (password1.length() > 6 && checkString(password1) != 0) {
@@ -35,7 +36,7 @@ public class Faza3 {
 				// Merr file ku deshiron ta ruaj tekstin e enkriptuar
 				FileWriter myWriter = new FileWriter(shfrytezuesitPath + shfrytezuesi + ".xml");
 				// Shkruaj ne ate file tekstin
-				//myWriter.write(hashPassword(password1).toString());
+				// myWriter.write(hashPassword(password1).toString());
 				myWriter.write(get_SHA_512_SecurePassword(password1, algorithmHash));
 				myWriter.close();
 				System.out.println("Eshte krijuar shfrytezuesi '" + shfrytezuesi + "'.");
@@ -49,37 +50,39 @@ public class Faza3 {
 		input.close();
 		return false;
 	}
+
 	public void login(String shfrytezuesi) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		System.out.println("Jepni fjalekalimin: ");
 		String fjalkalimi = input.nextLine();
-		
+
 		String checkPass = get_SHA_512_SecurePassword(fjalkalimi, algorithmHash);
 		// Lexo file-in
 		String readFile = readFile(shfrytezuesitPath + shfrytezuesi);
 		if (checkPass.compareTo(readFile) == 0) {
 			System.out.println(readFile);
-		}
-		else {
+		} else {
 			System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
 		}
-		
+
 	}
-	public String get_SHA_512_SecurePassword(String passwordToHash, String salt){
-	    String generatedPassword = null;
-	    try {
-	        MessageDigest md = MessageDigest.getInstance("SHA-512");
-	        md.update(salt.getBytes(StandardCharsets.UTF_8));
-	        byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
-	        StringBuilder sb = new StringBuilder();
-	        for(int i=0; i< bytes.length ;i++){
-	            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-	        }
-	        generatedPassword = sb.toString();
-	    } catch (NoSuchAlgorithmException e) {
-	        e.printStackTrace();
-	    }
-	    return generatedPassword;
+
+	public String get_SHA_512_SecurePassword(String passwordToHash, String salt) {
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(salt.getBytes(StandardCharsets.UTF_8));
+			byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.length; i++) {
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return generatedPassword;
 	}
+
 	private static int checkString(String str) {
 		char ch;
 		int count = 0;
@@ -95,6 +98,7 @@ public class Faza3 {
 		}
 		return 0;
 	}
+
 	public String readFile(String fileName) throws IOException {
 		String content = null;
 		File file = new File(fileName);
@@ -114,3 +118,12 @@ public class Faza3 {
 		}
 		return content;
 	}
+	public void writeMessage(String name, String message, String sender, String token) throws Exception {
+		String faza2 = rsa.writeMessage(name, message);
+		//byte[] pjesa5 = rsa.utf8(sender);
+		String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
+		
+		// qitu sosht e bane pjesa e 6
+		String faza3 = faza2 + "." + part5 + ".";
+	}
+}

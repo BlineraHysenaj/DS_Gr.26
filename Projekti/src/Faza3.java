@@ -155,5 +155,12 @@ public void statusToken(String token, String shfrytezuesi)
 	long kohaAktuale = System.currentTimeMillis() / 60000;
 
 	
+	long difMin = (kohaAktuale - skadimi);
+
+	
+	if (difMin > 20) {
+		System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
+	} else {
+		System.out.println("Token-i eshte ende valid");
 	}
 }

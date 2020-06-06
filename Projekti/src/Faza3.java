@@ -4,11 +4,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
@@ -69,6 +72,7 @@ public class Faza3 {
 		} else {
 			System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
 		}
+
 	}
 
 	public String generateToken(String shfrytezuesi)
@@ -98,9 +102,11 @@ public class Faza3 {
 		long difMin = (kohaAktuale - skadimi);
 		// System.out.println("Diferenca ne Minuta: " + difMin);//pse spo bahet execute
 		if (difMin > 20) {
+			//System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
 			return false;
 		} else {
 			return true;
+			//System.out.println("Token-i eshte ende valid");
 		}
 	}
 
@@ -157,12 +163,5 @@ public class Faza3 {
 		return content;
 	}
 
-	public void writeMessage(String name, String message, String sender, String token) throws Exception {
-		String faza2 = rsa.writeMessage(name, message);
-		// byte[] pjesa5 = rsa.utf8(sender);
-		String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
-
-		// qitu sosht e bane pjesa e 6
-		String faza3 = faza2 + "." + part5 + ".";
-	}
+	
 }

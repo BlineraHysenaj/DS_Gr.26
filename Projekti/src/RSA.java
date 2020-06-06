@@ -230,7 +230,7 @@ public class RSA {
 		readMessage(part1Split, part2Split, part3Split, part4Split);
 	}
 
-	private String encryptBase64DES(String unencryptedString) throws Exception {
+	public String encryptBase64DES(String unencryptedString) throws Exception {
 
 		// Merr bajtat e Mesazhit te pa enkriptuar
 		byte[] unencryptedByteArray = unencryptedString.getBytes("UTF8");

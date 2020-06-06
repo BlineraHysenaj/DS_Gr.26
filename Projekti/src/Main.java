@@ -210,7 +210,7 @@ public class Main {
 					rsa.writeMessageIntoFile(args[1], args[2], args[3]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
 				} else if (args.length == 5) { // faza3
-					faza3.writeMessage(args[1], args[2], args[3], args[4]);
+					//faza3.writeMessage(args[1], args[2], args[3], args[4]);
 				} else if (args.length > 5) {
 					// faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);

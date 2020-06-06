@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -57,13 +59,24 @@ public class Faza3 {
 
 		String checkPass = get_SHA_512_SecurePassword(fjalkalimi, algorithmHash);
 		// Lexo file-in
-		String readFile = readFile(shfrytezuesitPath + shfrytezuesi);
+		String readFile = readFile(shfrytezuesitPath + shfrytezuesi + ".txt");
 		if (checkPass.compareTo(readFile) == 0) {
-			System.out.println(readFile);
+			System.out.println("Token: " + GenerateToken(shfrytezuesi));
 		} else {
 			System.err.println("Gabim: Shfrytezuesi ose fjalekalimi i gabuar.");
 		}
 
+	}
+
+	public String GenerateToken(String shfrytezuesi)
+			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+//		String privateKey = readFile(rsa.keysPath + shfrytezuesi + ".xml");
+//		System.out.println("privateKey" + privateKey);
+		PrivateKey privateKey = rsa.getPrivateKeyFromXml(shfrytezuesi);
+		PublicKey publicKey = rsa.getPublicKeyFromXml(shfrytezuesi);
+		
+		return "cc5793fcce9cdd9f33ba817a85b5a95be29b74ddd1d811a81dc109066cb73d8d93708a5a6cada7b";
 	}
 
 	public String get_SHA_512_SecurePassword(String passwordToHash, String salt) {
@@ -118,11 +131,12 @@ public class Faza3 {
 		}
 		return content;
 	}
+
 	public void writeMessage(String name, String message, String sender, String token) throws Exception {
 		String faza2 = rsa.writeMessage(name, message);
-		//byte[] pjesa5 = rsa.utf8(sender);
+		// byte[] pjesa5 = rsa.utf8(sender);
 		String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
-		
+
 		// qitu sosht e bane pjesa e 6
 		String faza3 = faza2 + "." + part5 + ".";
 	}

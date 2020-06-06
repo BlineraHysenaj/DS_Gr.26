@@ -109,7 +109,7 @@ public class Main {
 			else if (args[0].equalsIgnoreCase("delete-user")) {
 				String PrivateKey = args[1] + ".xml";
 				String PublicKey = args[1] + ".pub.xml";
-				if (rsa.deleteUser(faza3.shfrytezuesitPath, args[1] + ".xml")){
+				if (rsa.deleteUser(faza3.shfrytezuesitPath, args[1] + ".txt")){
 					System.out.println("Eshte larguar shfrytezuesi '" + args[1]+ "'.");
 					if (rsa.checkFileIfExist(rsa.keysPath, PrivateKey)) {
 						if (rsa.deleteUser(rsa.keysPath, PrivateKey)) {
@@ -240,9 +240,9 @@ public class Main {
 			}
 // *******************************************--LOGIN--**************************************
 			else if(args[0].equalsIgnoreCase("login")) {
-				String name =  args[1] + ".xml";
+				String name =  args[1];
 				if(!args[1].isEmpty()) {
-					if (rsa.checkFileIfExist(faza3.shfrytezuesitPath, name)) {						
+					if (rsa.checkFileIfExist(faza3.shfrytezuesitPath, name + ".txt")) {						
 						faza3.login(name);
 					}
 					else {

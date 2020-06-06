@@ -266,7 +266,7 @@ public class RSA {
 
 	}
 
-	private PublicKey getPublicKeyFromXml(String name)
+	public PublicKey getPublicKeyFromXml(String name)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
 		// E marrim PublicKey nga File-i i dhene
@@ -284,7 +284,7 @@ public class RSA {
 		return publicKey;
 	}
 
-	private PrivateKey getPrivateKeyFromXml(String name)
+	public PrivateKey getPrivateKeyFromXml(String name)
 			throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
 		// E marrim PrivateKey nga File-i i dhene

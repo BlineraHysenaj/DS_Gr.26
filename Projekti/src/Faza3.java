@@ -274,3 +274,11 @@ public String  readMessage(String part1Split, String part2Split, String part3Spl
 		return null;
 	}
 }
+public void writeMessage(String name, String message, String sender, String token) throws Exception {
+	String faza2 = rsa.writeMessage(name, message);
+	
+	String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
+	
+	
+	
+}

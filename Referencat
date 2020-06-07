@@ -1,3 +1,14 @@
+---------- FAZA-3
+
+password_hashing: https://www.baeldung.com/java-password-hashing 
+
+psw for symbols: https://examples.javacodegeeks.com/core-java/util/regex/matcher/validate-password-with-java-regular-expression-example/
+why to use find and not match: https://stackoverflow.com/questions/30220786/java-matcher-matches-returning-false-when-it-should-be-true
+
+
+
+
+
 #REFERENCAT
 
 -Referenca per Create-User:

@@ -1,7 +1,0 @@
-https://www.baeldung.com/java-password-hashing 
-
-nuk egziston ni hesh i njejt per 2stringe te ndryshem, edhe prej heshi smunet me u kthy plaintexti.
-MD-5 dhe SHA-1
-
-psw for symbols: https://examples.javacodegeeks.com/core-java/util/regex/matcher/validate-password-with-java-regular-expression-example/
-why to use find mot match: https://stackoverflow.com/questions/30220786/java-matcher-matches-returning-false-when-it-should-be-true

@@ -42,7 +42,6 @@ public class JwtRSA {
 
 			list = null;
 		}
-
 		return list;
 	}
 }

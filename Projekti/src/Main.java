@@ -206,11 +206,13 @@ public class Main {
 					if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
 						System.out.println(rsa.writeMessage(args[1], args[2]));
 					}
-				} else if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
-					rsa.writeMessageIntoFile(args[1], args[2], args[3]);
-					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
+				} else if (args.length == 4) {
+					if (rsa.checkFileIfExist(rsa.keysPath, PublicKey)) {
+						rsa.writeMessageIntoFile(args[1], args[2], args[3]);
+						System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
+					}
 				} else if (args.length == 5) { // faza3
-					//faza3.writeMessage(args[1], args[2], args[3], args[4]);
+					faza3.writeMessage(args[1], args[2], args[3], args[4]);
 				} else if (args.length > 5) {
 					// faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
@@ -224,14 +226,19 @@ public class Main {
 				// E bejme split mesazhin e enkriptuar ne baze te pikes(".")
 				message = message.replace(" ", "");
 				String[] parts = message.split("[.]");
-
-				if (parts.length == 4) {
-					String part1Split = parts[0];
-					String part2Split = parts[1];
-					String part3Split = parts[2];
-					String part4Split = parts[3];
-					rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
-				} else {
+				String part1Split = parts[0];
+				String part2Split = parts[1];
+				String part3Split = parts[2];
+				String part4Split = parts[3];
+				String part5Split = parts[4];
+				String part6Split = parts[5];
+				if (parts.length == 4) {					
+					String readMessage = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
+					System.out.println(readMessage);
+				}
+				else if(parts.length == 6){
+					faza3.readMessage(part1Split, part2Split, part3Split, part4Split, part5Split, part6Split);
+				}else {				
 					rsa.readMessageIntoFile(args[1]);
 				}
 			}

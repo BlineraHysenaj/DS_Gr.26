@@ -181,7 +181,7 @@ public class RSA {
 		myWriter.close();
 	}
 
-	public void readMessage(String part1Split, String part2Split, String part3Split, String part4Split)
+	public String readMessage(String part1Split, String part2Split, String part3Split, String part4Split)
 			throws Exception {
 		String decryptedMessage = "";
 
@@ -213,8 +213,9 @@ public class RSA {
 			decryptedMessage = decryptBase64DES(part4Split);
 
 			System.out.println("Marresi: " + part1);
-			System.out.println("Mesazhi: " + decryptedMessage);
+			return ("Mesazhi: " + decryptedMessage);
 		}
+		return null;
 	}
 
 	public void readMessageIntoFile(String path) throws Exception {
@@ -227,7 +228,8 @@ public class RSA {
 		String part2Split = parts[1];
 		String part3Split = parts[2];
 		String part4Split = parts[3];
-		readMessage(part1Split, part2Split, part3Split, part4Split);
+		String message = readMessage(part1Split, part2Split, part3Split, part4Split);
+		System.out.println(message);
 	}
 
 	public String encryptBase64DES(String unencryptedString) throws Exception {

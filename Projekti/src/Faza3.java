@@ -3,13 +3,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Faza3 {
 	private String algorithmHash = "SHA-512";
@@ -26,7 +32,7 @@ public class Faza3 {
 
 		System.out.println("Jepni fjalekalimin: ");
 		String password1 = input.nextLine();
-		if (password1.length() > 6 && checkString(password1) != 0) {
+		if ((password1.length() > 6) && (checkStringForNumbers(password1) == true | checkPasswordForSymbols(password1) == true)) {
 			System.out.println("Perserit fjalekalimin: ");
 			String password2 = input.nextLine();
 			if (password1.compareTo(password2) == 0) {
@@ -84,17 +90,11 @@ public class Faza3 {
 		long skadimi = Long.parseLong(arrOfStr[1].trim()) / 60000;
 		long kohaAktuale = System.currentTimeMillis() / 60000;
 
-		// Gjenerona Tokenin edhe nihere se kokan ba 22min, mir eshre
-		// System.out.println("Koha e krijimit te Tokenit: " + skadimi);
-		// System.out.println("Koha aktuale: " + kohaAktuale);
 		long difMin = (kohaAktuale - skadimi);
-		// System.out.println("Diferenca ne Minuta: " + difMin);//pse spo bahet execute
 		if (difMin > 20) {
-			//System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
 			return false;
 		} else {
 			return true;
-			//System.out.println("Token-i eshte ende valid");
 		}
 	}
 
@@ -115,20 +115,16 @@ public class Faza3 {
 		return generatedPassword;
 	}
 
-	private static int checkString(String str) {
-		char ch;
-		int count = 0;
+	private static boolean checkStringForNumbers(String str) {
+		char ch;		
 		boolean numberFlag = false;
 		for (int i = 0; i < str.length(); i++) {
 			ch = str.charAt(i);
 			if (Character.isDigit(ch)) {
 				numberFlag = true;
-				count++;
 			}
-			if (numberFlag)
-				return count;
 		}
-		return 0;
+		return numberFlag;
 	}
 
 	public String readFile(String fileName) throws IOException {
@@ -151,5 +147,109 @@ public class Faza3 {
 		return content;
 	}
 
-	
+	public void writeMessage(String name, String message, String sender, String token) throws Exception {
+		String faza2 = rsa.writeMessage(name, message);
+
+		if (statusToken(token, sender) == true) {
+			String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
+			String part6 = Base64.getEncoder().encodeToString(signatureMessage(rsa.encryptBase64DES(message), sender));
+			String faza3 = faza2 + "." + part5 + "." + part6;
+			System.out.println(faza3);
+		} else {
+			System.out.println("Token-i eshte jo-valid!");
+		}
+	}
+
+	private byte[] signatureMessage(String message, String sender) throws IOException, NoSuchAlgorithmException,
+			InvalidKeyException, InvalidKeySpecException, SignatureException {
+
+		if (rsa.checkFileIfExist(shfrytezuesitPath, sender + ".txt")) {
+			if (rsa.checkFileIfExist(rsa.keysPath, sender + ".xml")) {
+				PrivateKey privateKey = rsa.getPrivateKeyFromXml(sender);
+
+				// Creating a Signature object
+				Signature sign = Signature.getInstance("SHA1withRSA");// SHA256withRSA
+
+				// Initialize the signature
+				sign.initSign(privateKey);
+				byte[] bytes = message.getBytes();
+
+				// Adding data to the signature
+				sign.update(bytes);
+
+				// Calculating the signature
+				byte[] signature = sign.sign();
+				return signature;
+			} else {
+				System.err.println("Fajlli i juaj per PrivateKey nuk u gjend!");
+			}
+		} else {
+			System.err.println("Shfrytezuesi nuk u gjend!");
+		}
+		return null;
+	}
+
+	public String readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender,
+			String token) throws Exception {
+
+		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
+		byte[] senderpart1B64 = Base64.getDecoder().decode(sender.getBytes());
+		String senderUFT8 = new String(senderpart1B64, StandardCharsets.UTF_8);
+
+		System.out.println(message);
+		System.out.println("Derguesi: " + senderUFT8);
+		System.out.println("Nenshkrimi :" + verifySignature(part4Split, senderUFT8));
+		return null;
+	}
+
+	public String verifySignature(String message, String senderUFT8) throws NoSuchAlgorithmException,
+			InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
+
+		if (rsa.checkFileIfExist(rsa.keysPath, senderUFT8 + ".pub.xml")) {
+
+			// Creating a Signature object
+			Signature sign = Signature.getInstance("SHA1withRSA");
+			PrivateKey privateKey = rsa.getPrivateKeyFromXml(senderUFT8);
+			// Initialize the signature
+			sign.initSign(privateKey);
+
+			byte[] bytes = message.getBytes();
+
+			// Adding data to the signature
+			sign.update(bytes);
+
+			// Calculating the signature
+			byte[] signature = sign.sign();
+
+			PublicKey publicKey = rsa.getPublicKeyFromXml(senderUFT8);
+			// Initializing the signature
+			sign.initVerify(publicKey);
+
+			// Verify the signature
+			boolean bool = sign.verify(signature);
+
+			if (bool) {
+				System.out.println("Signature verified");
+			} else {
+				System.out.println("Signature failed");
+			}
+		}else {
+			return "mungon celesi publik '" + senderUFT8 + "'";
+		}
+		return null;		
+	}
+
+	private boolean checkPasswordForSymbols(String password) {
+
+		String PASSWORD_PATTERN = "([@#$%^&-+=()]+)";
+		Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+		Matcher matcher = pattern.matcher(password);
+		if(matcher.find() == true) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 }

@@ -276,9 +276,11 @@ public String  readMessage(String part1Split, String part2Split, String part3Spl
 }
 public void writeMessage(String name, String message, String sender, String token) throws Exception {
 	String faza2 = rsa.writeMessage(name, message);
-	
+	// byte[] pjesa5 = rsa.utf8(sender);
 	String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
 	
 	
-	
+	// qitu sosht e bane pjesa e 6
+	String part6 = Base64.getEncoder().encodeToString(signatureMessage(rsa.encryptBase64DES(message), sender));
+	String faza3 = faza2 + "." + part5 + "." + part6;
 }

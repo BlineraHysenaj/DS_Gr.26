@@ -271,12 +271,15 @@ public class Main {
 				System.out.println(" delete-user emri-i-fajllit ");
 				System.out.println(" export-key <public|private> <name> [file]");
 				System.out.println(" import-key <name> <path> ");
-				System.out.println(" ds write-message <name> <message> [file] ");
+				System.out.println(" write-message <name> <message> [file] ");
 				System.out.println(" read-message <encrypted-message> ");
+				System.out.println(" login emri ");
+				System.out.println(" status emri token-i");
+				System.out.println(" write-message <name> <message> [file] sender token. { argumenti [file] eshte opsional} ");
 			} else {
 				// throw new IllegalArgumentException("Sort type undefined");
 				System.err.println("Argumenti i zgjedhur " + args[0] + " eshte jo-valid");
-				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca.");
+				System.out.println("Mundesia e zgjedhjes se algoritmit eshte: vigenere , playfair ose frekuenca, create-user, delete-user, export-key, import-key, login, status, write-message, read-message");
 				System.out.println("Nese nuk keni njohuri, shkruani \"HELP\" ");
 			}
 

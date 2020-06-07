@@ -217,7 +217,7 @@ public class Faza3 {
 
 		System.out.println(message);
 		System.out.println("Derguesi: " + senderUFT8);
-		System.out.println("Nenshkrimi :" + verifySignature(part4Split, senderUFT8));
+		System.out.println("Nenshkrimi:" + verifySignature(part4Split, senderUFT8));
 		return null;
 	}
 
@@ -225,7 +225,6 @@ public class Faza3 {
 			InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
 
 		if (rsa.checkFileIfExist(rsa.keysPath, senderUFT8 + ".pub.xml")) {
-
 			// Creating a Signature object
 			Signature sign = Signature.getInstance("SHA1withRSA");
 			PrivateKey privateKey = rsa.getPrivateKeyFromXml(senderUFT8);
@@ -243,19 +242,19 @@ public class Faza3 {
 			PublicKey publicKey = rsa.getPublicKeyFromXml(senderUFT8);
 			// Initializing the signature
 			sign.initVerify(publicKey);
+			sign.update(bytes);
 
 			// Verify the signature
 			boolean bool = sign.verify(signature);
 
-			if (bool) {
-				System.out.println("Signature verified");
-			} else {
-				System.out.println("Signature failed");
+			if (!bool) {
+				return " Signature failed";
 			}
 		} else {
-			return "mungon celesi publik '" + senderUFT8 + "'";
+			return " mungon celesi publik '" + senderUFT8 + "'";
 		}
-		return null;
+
+		return " Signature verified";
 	}
 
 	private boolean checkPasswordForSymbols(String password) {
@@ -269,5 +268,4 @@ public class Faza3 {
 			return false;
 		}
 	}
-
 }

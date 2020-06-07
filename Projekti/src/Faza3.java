@@ -32,7 +32,8 @@ public class Faza3 {
 
 		System.out.println("Jepni fjalekalimin: ");
 		String password1 = input.nextLine();
-		if ((password1.length() > 6) && (checkStringForNumbers(password1) == true | checkPasswordForSymbols(password1) == true)) {
+		if ((password1.length() > 6)
+				&& (checkStringForNumbers(password1) == true | checkPasswordForSymbols(password1) == true)) {
 			System.out.println("Perserit fjalekalimin: ");
 			String password2 = input.nextLine();
 			if (password1.compareTo(password2) == 0) {
@@ -74,14 +75,23 @@ public class Faza3 {
 		PrivateKey privateKey = rsa.getPrivateKeyFromXml(shfrytezuesi);
 
 		String token = jwtrsa.generateToken(privateKey, shfrytezuesi);
-		// System.out.println("Token: " + token);
 
 		return token;
 	}
 
-	public boolean statusToken(String token, String shfrytezuesi)
+	public void statusToken(String token, String shfrytezuesi)
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
+		PublicKey publicKey = rsa.getPublicKeyFromXml(shfrytezuesi);
+		ArrayList<String> claims = jwtrsa.verifyToken(token, publicKey);
+
+		for (String c : claims) {
+			System.out.println(c);
+		}
+	}
+
+	public boolean timeToken(String token, String shfrytezuesi)
+			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		PublicKey publicKey = rsa.getPublicKeyFromXml(shfrytezuesi);
 		ArrayList<String> claims = jwtrsa.verifyToken(token, publicKey);
 
@@ -116,7 +126,7 @@ public class Faza3 {
 	}
 
 	private static boolean checkStringForNumbers(String str) {
-		char ch;		
+		char ch;
 		boolean numberFlag = false;
 		for (int i = 0; i < str.length(); i++) {
 			ch = str.charAt(i);
@@ -147,17 +157,26 @@ public class Faza3 {
 		return content;
 	}
 
-	public void writeMessage(String name, String message, String sender, String token) throws Exception {
+	public String writeMessage(String name, String message, String sender, String token) throws Exception {
 		String faza2 = rsa.writeMessage(name, message);
 
-		if (statusToken(token, sender) == true) {
+		if (timeToken(token, sender) == true) {
 			String part5 = Base64.getEncoder().encodeToString(rsa.utf8(sender));
 			String part6 = Base64.getEncoder().encodeToString(signatureMessage(rsa.encryptBase64DES(message), sender));
 			String faza3 = faza2 + "." + part5 + "." + part6;
-			System.out.println(faza3);
+			return faza3;
 		} else {
-			System.out.println("Token-i eshte jo-valid!");
+			return "Token-i eshte jo-valid!";
 		}
+	}
+
+	public void writeMessageIntoFile(String name, String message, String path, String sender, String token)
+			throws IOException, Exception {
+		// Merr file ku deshiron ta ruaj tekstin e enkriptuar
+		FileWriter myWriter = new FileWriter(rsa.enkriptimiPath + path);
+		// Shkruaj ne ate file tekstin e enkriptuar
+		myWriter.write(writeMessage(name, message, sender, token));
+		myWriter.close();
 	}
 
 	private byte[] signatureMessage(String message, String sender) throws IOException, NoSuchAlgorithmException,
@@ -189,8 +208,8 @@ public class Faza3 {
 		return null;
 	}
 
-	public String readMessage1(String part1Split, String part2Split, String part3Split, String part4Split, String sender,
-			String token) throws Exception {
+	public String readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender,
+			String signatureMessage) throws Exception {
 
 		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
 		byte[] senderpart1B64 = Base64.getDecoder().decode(sender.getBytes());
@@ -233,10 +252,10 @@ public class Faza3 {
 			} else {
 				System.out.println("Signature failed");
 			}
-		}else {
+		} else {
 			return "mungon celesi publik '" + senderUFT8 + "'";
 		}
-		return null;		
+		return null;
 	}
 
 	private boolean checkPasswordForSymbols(String password) {
@@ -244,33 +263,11 @@ public class Faza3 {
 		String PASSWORD_PATTERN = "([@#$%^&-+=()]+)";
 		Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 		Matcher matcher = pattern.matcher(password);
-		if(matcher.find() == true) {
+		if (matcher.find() == true) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
-public String  readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender, String token) throws Exception {
-		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
-		
-	        //Creating a Signature object
-		Signature sign = Signature.getInstance("SHA256withDSA");
-		PrivateKey privateKey = rsa.getPrivateKeyFromXml(rsa.keysPath + sender + ".xml");
-		//Initialize the signature
-		sign.initSign(privateKey);
-		
-		byte[] bytes = message.getBytes();      
-
-	        //Adding data to the signature
-		sign.update(bytes);
-	
-	       //Calculating the signature
-		byte[] signature = sign.sign();
-		
-	
-		
-		return null;
-	}
 }

@@ -212,9 +212,9 @@ public class Main {
 						System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
 					}
 				} else if (args.length == 5) { // faza3
-					faza3.writeMessage(args[1], args[2], args[3], args[4]);
+					System.out.println(faza3.writeMessage(args[1], args[2], args[3], args[4]));
 				} else if (args.length > 5) {
-					// faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
+					faza3.writeMessageIntoFile(args[1], args[2], args[3], args[4], args[5]);
 					System.out.println("Mesazhi i enkriptuar u ruajt ne fajllin " + args[3]);
 				} else {
 					System.err.println("Gabim: Celesi '" + args[1] + "' nuk ekziston.");
@@ -226,19 +226,22 @@ public class Main {
 				// E bejme split mesazhin e enkriptuar ne baze te pikes(".")
 				message = message.replace(" ", "");
 				String[] parts = message.split("[.]");
-				String part1Split = parts[0];
-				String part2Split = parts[1];
-				String part3Split = parts[2];
-				String part4Split = parts[3];
-				String part5Split = parts[4];
-				String part6Split = parts[5];
 				if (parts.length == 4) {					
+					String part1Split = parts[0];
+					String part2Split = parts[1];
+					String part3Split = parts[2];
+					String part4Split = parts[3];
 					String readMessage = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
 					System.out.println(readMessage);
-				}
-				else if(parts.length == 6){
+				} else if (parts.length == 6) {
+					String part1Split = parts[0];
+					String part2Split = parts[1];
+					String part3Split = parts[2];
+					String part4Split = parts[3];
+					String part5Split = parts[4];
+					String part6Split = parts[5];
 					faza3.readMessage(part1Split, part2Split, part3Split, part4Split, part5Split, part6Split);
-				}else {				
+				} else {
 					rsa.readMessageIntoFile(args[1]);
 				}
 			}
@@ -257,11 +260,7 @@ public class Main {
 			}
 // *******************************************--STATUS--*********************************************
 			else if (args[0].equalsIgnoreCase("status")) {
-				if (faza3.statusToken(args[2], args[1]) == false) {
-					System.out.println("Token-i nuk eshte valid, ai ka skaduar!");
-				} else if (faza3.statusToken(args[2], args[1]) == true) {
-					System.out.println("Token-i eshte ende valid");
-				}
+				faza3.statusToken(args[2], args[1]);
 			}
 // *******************************************--HELP--***********************************************
 			else if (args[0].equalsIgnoreCase("help")) {

@@ -228,10 +228,19 @@ public class RSA {
 		String part2Split = parts[1];
 		String part3Split = parts[2];
 		String part4Split = parts[3];
-		String message = readMessage(part1Split, part2Split, part3Split, part4Split);
-		System.out.println(message);
+		if (parts.length == 4) {
+			String message = readMessage(part1Split, part2Split, part3Split, part4Split);
+			System.out.println(message);
+		}
+		else {
+			Faza3 faza3 = new Faza3();
+			String sender = parts[4];
+			String signatureMessage = parts[5];
+			String message = faza3.readMessage(part1Split, part2Split, part3Split, part4Split, sender, signatureMessage);
+			System.out.println(message);
+		}
+		
 	}
-
 	public String encryptBase64DES(String unencryptedString) throws Exception {
 
 		// Merr bajtat e Mesazhit te pa enkriptuar

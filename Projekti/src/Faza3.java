@@ -189,7 +189,7 @@ public class Faza3 {
 		return null;
 	}
 
-	public String readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender,
+	public String readMessage1(String part1Split, String part2Split, String part3Split, String part4Split, String sender,
 			String token) throws Exception {
 
 		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
@@ -252,4 +252,25 @@ public class Faza3 {
 		}
 	}
 
+public String  readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender, String token) throws Exception {
+		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
+		
+	        //Creating a Signature object
+		Signature sign = Signature.getInstance("SHA256withDSA");
+		PrivateKey privateKey = rsa.getPrivateKeyFromXml(rsa.keysPath + sender + ".xml");
+		//Initialize the signature
+		sign.initSign(privateKey);
+		
+		byte[] bytes = message.getBytes();      
+
+	        //Adding data to the signature
+		sign.update(bytes);
+	
+	       //Calculating the signature
+		byte[] signature = sign.sign();
+		
+	
+		
+		return null;
+	}
 }

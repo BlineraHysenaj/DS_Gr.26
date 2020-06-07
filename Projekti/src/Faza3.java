@@ -153,3 +153,23 @@ public class Faza3 {
 
 	
 }
+public String  readMessage(String part1Split, String part2Split, String part3Split, String part4Split, String sender, String token) throws Exception {
+		String message = rsa.readMessage(part1Split, part2Split, part3Split, part4Split);
+		
+	
+		Signature sign = Signature.getInstance("SHA256withDSA");
+		PrivateKey privateKey = rsa.getPrivateKeyFromXml(rsa.keysPath + sender + ".xml");
+		
+		sign.initSign(privateKey);
+		
+		byte[] bytes = message.getBytes();      
+
+	
+		sign.update(bytes);
+	
+		byte[] signature = sign.sign();
+		
+	
+		
+		return null;
+	}

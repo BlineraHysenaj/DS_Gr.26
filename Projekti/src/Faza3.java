@@ -284,3 +284,10 @@ public void writeMessage(String name, String message, String sender, String toke
 	String part6 = Base64.getEncoder().encodeToString(signatureMessage(rsa.encryptBase64DES(message), sender));
 	String faza3 = faza2 + "." + part5 + "." + part6;
 }
+private boolean checkPasswordForSymbols(String password) {
+	
+	final String PASSWORD_PATTERN = "(?=.*[@#$%!])";		
+    Pattern pattern = Pattern.compile(PASSWORD_PATTERN);	    
+    Matcher matcher = pattern.matcher(password);
+    return matcher.matches();
+}

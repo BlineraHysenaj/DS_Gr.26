@@ -26,4 +26,11 @@ https://www.w3schools.com/java/java_files_create.
 
 -Referenca per encrypt dhe decrypt:
  https://github.com/only2dhir/rsaencryption/blob/master/src/main/java/com/devglan/rsa/RSAUtil.java
- https://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file
+ https://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file 
+ 
+ jwt with public/private keys: https://stackoverflow.com/questions/37722090/java-jwt-with-public-private-keys 
+ 
+instalimi i mavenit: http://roufid.com/how-to-install-maven-on-eclipse-ide/
+
+krijimi i nje maven projekt: https://learnjava.co.in/how-to-add-maven-dependencies-via-eclipse/
+
